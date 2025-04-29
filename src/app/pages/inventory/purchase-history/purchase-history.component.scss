@@ -1,0 +1,67 @@
+@import "/src/theme/exports/table-list.scss";
+
+
+.table-top {
+  justify-content: start;
+  gap: 20px;
+}
+
+.header {
+  padding: 12px 0 16px;
+
+  h2 {
+    margin: 0;
+    font-family: $font-en-nunito;
+    font-weight: 800;
+    font-size: 22px;
+    border-radius: 5px;
+    color: #212b36;
+    text-align: center;
+  }
+}
+
+
+.search-div{
+display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 2%;
+}
+
+
+.search-set .search-input {
+  position: relative;
+}
+
+.search-set .search-input .btn-searchset {
+  padding: 3px;
+  border-radius: 50px;
+  position: absolute;
+  top: 7px;
+  left: 2px;
+  color: #757575;
+
+  .mat-icons {
+    font-size: 21px;
+    color: #757575;
+  }
+}
+
+.search-set .search-input input[type="search"] {
+  background: transparent;
+  height: 40px;
+  border: 1px solid rgba(145, 158, 171, 0.32);
+  width: 400px;
+  border-radius: 5px;
+  padding: 0 15px 0 30px;
+}
+@media (max-width: 800px) {
+  .search-set .search-input input[type="search"] {
+    width: 300px;
+  }
+}
+@media (max-width: 500px) {
+  .search-set .search-input input[type="search"] {
+    width: 200px;
+  }
+}

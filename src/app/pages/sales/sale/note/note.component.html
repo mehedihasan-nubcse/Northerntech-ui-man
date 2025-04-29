@@ -1,0 +1,28 @@
+<div class="container">
+
+  <div class="input-area" >
+
+
+    <form class="form" #formElement="ngForm" [formGroup]="dataForm" (ngSubmit)="onSubmit()">
+
+
+
+      <p>Note*</p>
+      <mat-form-field class="rating-form-field" appearance="outline">
+        <mat-label>Please write your details...</mat-label>
+        <textarea formControlName="note" name="text" matInput rows="5" required></textarea>
+      </mat-form-field>
+
+
+
+      <div class="action">
+        <button mat-raised-button type="submit" color="primary">Submit</button>
+        <button mat-button mat-dialog-close >Cancel</button>
+      </div>
+    </form>
+  </div>
+
+
+
+</div>
+

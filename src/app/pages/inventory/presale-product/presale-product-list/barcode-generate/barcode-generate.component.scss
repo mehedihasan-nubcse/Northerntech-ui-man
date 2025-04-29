@@ -1,0 +1,52 @@
+
+.area {
+  //width: 45mm;
+  //height: 35mm;
+  width: 38mm;
+  height: 26mm;
+  background: #ffffff;
+  //border: 1px solid #ccc;
+  padding: 5px;
+  position: relative;
+}
+
+ngx-barcode {
+  position: absolute;
+  top: 12px;
+  //left: 10px;
+}
+
+.name {
+  position: absolute;
+  top: 3px;
+  width: 100%;
+  z-index: 99;
+  left: 0;
+  right: 0;
+}
+
+.bottom {
+  position: absolute;
+  bottom: 16px;
+  left: 0;
+  right: 0;
+}
+
+p {
+  margin: 1px 0;
+  padding-left: 8px;
+  line-height: 1;
+  font-size: 10px;
+  text-align: center;
+
+}
+
+h5 {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 900;
+  margin-top: -2px;
+  margin-bottom: -2px;
+}
+
+

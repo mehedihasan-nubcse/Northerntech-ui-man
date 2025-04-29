@@ -1,0 +1,36 @@
+
+<form #searchForm=ngForm class="from" style="width: 100%" appOutSideClick
+      (outsideClick)="handleOutsideClick()">
+  <mat-label>Invoice</mat-label>
+  <div class="cutomer-search" (click)="onClickSearchArea($event)">
+    <mat-form-field appearance="outline">
+      <input
+        ngModel
+        type="text"
+        #searchInput
+        name="searchTerm"
+        matInput
+        (focus)=handleFocus($event)
+        placeholder="Enter Invoice No"
+      />
+    </mat-form-field>
+
+    <!---suggesstion-area-->
+    <div
+      class="suggesstion-area"
+      [class]="searchInvoice.length && isOpen ? 'active' : 'inactive'"
+
+    >
+      <ul>
+        <li *ngFor="let data of searchInvoice" (click)="onSelectItem(data)">
+          <div class="suggesstion-left">
+            <div class="sug-product-name">
+              <h5>Invoice No: {{data.invoiceNo}} </h5>
+              <p>Id: {{data._id.slice(15, 24)}} </p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</form> <!-- END USer Search -->

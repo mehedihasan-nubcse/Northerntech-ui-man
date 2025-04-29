@@ -1,0 +1,106 @@
+<!--PRINT AREA -->
+<div class="pos-receipt">
+<!--  <div class="img">-->
+<!--    <img src="/assets/brand/logo-pos-natco.png" alt="">-->
+<!--  </div>  &lt;!&ndash; END! Logo &ndash;&gt;-->
+  <div class="info">
+    <h3>Sales Receipts</h3>
+    <p *ngIf="shopInformation?.siteName"><b>{{shopInformation?.siteName}}</b></p>
+    <p *ngIf="shopInformation?.uenNo"><b>UEN NO:</b> {{shopInformation?.uenNo}}</p>
+    <p *ngIf="shopInformation?.addresses" style="font-size: 11px"><b>Address:</b> {{shopInformation?.addresses[0]?.value}}</p>
+    <p *ngIf="shopInformation?.phones" style="font-size: 11px"><b>TEL:</b> {{shopInformation?.phones[0]?.value}}</p>
+    <p *ngIf="data?.customer?.name"><b>Customer Name:</b> {{data?.customer?.name ?? '-'}}</p>
+    <p *ngIf="data?.customer?.phone"><b>Phone No:</b> {{data?.customer?.phone ?? '-'}}</p>
+    <p><b>Date Time:</b> {{(data?.soldDateString | date) ?? '-'}} {{data?.soldTime ?? '-'}}</p>
+    <p><b>Invoice No:</b> {{data?.invoiceNo ?? '-'}}</p>
+  </div> <!-- END! Top Info -->
+
+  <div class="item-table">
+    <div class="header">
+      <p><b>SL</b></p>
+      <p><b>Qty</b></p>
+      <p class="full"><b>Item</b></p>
+      <p class="price"><b> Price</b></p>
+      <p><b> Total</b></p>
+    </div>
+
+    <div class="items" *ngFor="let product of data?.products, let i = index">
+      <p class="ttt">{{i+1}}.</p>
+      <p>{{product?.soldQuantity}}x</p>
+      <p class="full">
+        <span class="full1">{{utilsService.getProductName(product)}} {{product?.saleType === 'Return' ? '(Returned)' : ''}}</span>
+      <span class="full1" *ngIf="product?.imei">IMEI: {{product?.imei.slice(-8)}}</span>
+<!--      <span class="full1">Category:{{product?.category?.name}}</span>-->
+      </p>
+<!--      <h4 *ngIf="data?.imei">IMEI: {{data?.imei.slice(-4)}}</h4>-->
+<!--      <h4>Category: {{data?.category?.name}}</h4>-->
+
+<!--      <p>{{shopInformation?.currency | currencyIcon}}{{product?.saleType === 'Return' ? '-' : ''}}{{(product?.soldQuantity)}}x{{(product?.salePrice)}}.00</p>-->
+      <p>{{product?.soldQuantity}}x{{product?.salePrice}}</p>
+
+      <p>{{shopInformation?.currency | currencyIcon}}{{product?.saleType === 'Return' ? '-' : ''}}{{((product?.salePrice)*(product?.soldQuantity)) | number: '0.2'}}</p>
+    </div>
+  </div>  <!-- END! Item Table -->
+
+  <div class="calculation-area">
+    <div class="info-1">
+      <div class="item">
+        <p><b>Sub Total</b>:</p>
+        <p><b>{{shopInformation?.currency | currencyIcon}}{{data?.subTotal | number: '0.2'}}</b></p>
+      </div>
+      <div class="item">
+        <p>Discount:</p>
+        <p>-{{shopInformation?.currency | currencyIcon}}{{data?.discount | number: '0.2'}}</p>
+      </div>
+      <div class="item">
+        <p>GST:</p>
+        <p>{{shopInformation?.currency | currencyIcon}}{{data?.vatAmount | number: '0.2'}}</p>
+      </div>
+    </div>
+
+    <div class="info-2">
+      <div class="item">
+        <p style="font-size: 18px"><b>Total</b>:</p>
+        <p style="font-size: 18px"><b>{{shopInformation?.currency | currencyIcon}}{{data?.total | number: '0.2'}}</b></p>
+      </div>
+      <div class="item">
+        <p>{{data?.paymentType | titlecase}}:</p>
+        <p>{{shopInformation?.currency | currencyIcon}}{{(data?.receivedFromCustomer ?? data?.total) | number: '0.2'}}</p>
+      </div>
+      <div class="item">
+        <p>Changed:</p>
+        <p>{{shopInformation?.currency | currencyIcon}}{{data?.receivedFromCustomer ? ((data?.total - data?.receivedFromCustomer) | number: '0.2') : 0}}</p>
+      </div>
+    </div>
+
+  </div> <!-- END! Calculation Area -->
+
+  <div class="greeting">
+    <div class="top">
+<!--      <p>Thank You</p>-->
+    </div>
+    <div class="shop-info" *ngIf="data?.note">
+      <p class="txt">Note: {{data?.note}}</p>
+<!--      <p><i class="fas fa-phone-alt"></i> +6593719554</p>-->
+    </div>
+  </div>  <!-- END! Greeting Area -->
+
+<!--  <div class="barcode">-->
+<!--    <qrcode [qrdata]="'http://natco.polsonerp.com/'" [width]="100" [errorCorrectionLevel]="'M'"></qrcode>-->
+<!--  </div> &lt;!&ndash; END! Barcode Area &ndash;&gt;-->
+
+  <div class="footer" *ngIf="shopInformation?.footerText">
+<!--    <p><b>{{data?.invoiceNo}}</b></p>-->
+<!--    <p><b>{{data?.soldDateString}}</b></p>-->
+<!--    <p><b>{{data?.soldTime ?? '-'}}</b></p>-->
+    <p >{{shopInformation?.footerText}}</p>
+<!--    <p><b>{{data?.salesman?.name}}</b></p>-->
+  </div>  <!-- END! Footer Area -->
+
+    <div class="note" >
+<!--      <p class="border">Note</p>-->
+<!--      <p>Note: {{data?.note}}</p>-->
+      <p>Thank You</p>
+    </div>
+
+</div>

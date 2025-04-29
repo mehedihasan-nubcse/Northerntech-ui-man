@@ -1,0 +1,67 @@
+@import 'src/theme/variables';
+
+.main-div {
+  font-family: $font-en-primary;
+  //background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  //justify-content: center;
+  //align-items: center;
+  //height: 100vh;
+  margin: 0;
+  width: 100%;
+}
+
+.table-container {
+  background-color: #fff;
+  border-radius: 8px;
+  //box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 1000px;
+  h1{
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+  }
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+thead th {
+  border: 1px solid #e0e0e0;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+tbody td {
+  border: 2px solid black;
+  padding: 10px;
+  font-size: 26px;
+  width: 50%;
+  line-height: 40px;
+}
+
+.total-label {
+  //text-align: right;
+  font-weight: bold;
+}
+
+.total-value {
+  font-weight: bold;
+}
+
+.header-date{
+  text-align: end;
+  font-size: 14px;
+  font-weight: 500;
+
+}
+
+
+.tbody-aling{
+  text-align: center !important;
+}

@@ -1,0 +1,476 @@
+<section class="add-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>BuyBack {{id ? 'Update' : 'Add'}}</h4>
+    </div>
+  </div>
+  <div class="checkbox" *ngIf="!id">
+    <mat-checkbox [(ngModel)]="preventFormReset" (change)="onCheckResetForm()" color="primary">Prevent Form Reset
+    </mat-checkbox>
+  </div>
+</section>
+
+<section class="from-section">
+
+
+  <form #formElement="ngForm" [formGroup]="dataForm" (ngSubmit)="onSubmit()" class="area-border">
+    <div class="grid">
+    <div class="from">
+      <mat-label>Purchase Date</mat-label>
+      <mat-form-field appearance="outline" (click)="picker.open()">
+        <input formControlName="dateString"
+               matInput
+               readonly
+               [matDatepicker]="picker"
+               required
+               placeholder="Choose Date"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error>This field is required.</mat-error>
+      </mat-form-field>
+    </div>
+    </div>
+    <div class="heading">
+      <p>Product Information</p>
+    </div>
+
+    <div class="grid">
+      <div class="from">
+        <mat-label>Product Name *</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="name" matInput placeholder="Enter name" required/>
+        </mat-form-field>
+      </div>
+<!--      <div class="from form-flex">-->
+<!--        <app-vendor-search-field style="width: 100%" placeholder="Select supplier" (onSelect)="onSelectVendorList($event)"-->
+<!--                                 [data]="vendor ? vendor : null">-->
+<!--        </app-vendor-search-field>-->
+<!--        <div class="add-icon">-->
+<!--          <a (click)="onToggle('vendor')"-->
+<!--             [class]="vendorForm ? 'active' : ''">-->
+<!--            <img [src]="-->
+<!--                vendorForm-->
+<!--                  ? './assets/images/svg/closes.svg'-->
+<!--                  : './assets/images/svg/plus1.svg'-->
+<!--              " alt="img"/></a>-->
+<!--        </div>-->
+<!--      </div>-->
+
+      <!--      <div class="from">-->
+      <!--        <mat-label>Active</mat-label>-->
+      <!--        <mat-form-field appearance="outline">-->
+      <!--          <mat-select formControlName="status" required placeholder="Active status">-->
+      <!--            <mat-option *ngFor="let data of dataBoolean" [value]="data.value">-->
+      <!--              {{data.viewValue}}-->
+      <!--            </mat-option>-->
+      <!--          </mat-select>-->
+      <!--        </mat-form-field>-->
+      <!--      </div>-->
+
+<!--      <div class="from">-->
+<!--        <mat-label>SKU</mat-label>-->
+<!--        <mat-form-field appearance="outline">-->
+<!--          <input formControlName="sku" matInput placeholder="Enter sku"/>-->
+<!--          <mat-error>This field is required</mat-error>-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+
+      <div class="from">
+        <mat-label>IMEI-No *</mat-label>
+        <mat-form-field appearance="outline">
+          <input required formControlName="imei" matInput placeholder="Enter Imei number"/>
+          <mat-error>This field is required</mat-error>
+        </mat-form-field>
+      </div>
+
+<!--      <div class="from">-->
+<!--        <mat-label>Purchase Date</mat-label>-->
+<!--        <mat-form-field appearance="outline" (click)="picker.open()">-->
+<!--          <input formControlName="dateString"-->
+<!--                 matInput-->
+<!--                 readonly-->
+<!--                 [matDatepicker]="picker"-->
+<!--                 required-->
+<!--                 placeholder="Choose Date"-->
+<!--                 [max]="today"/>-->
+<!--          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>-->
+<!--          <mat-datepicker #picker></mat-datepicker>-->
+<!--          <mat-error>This field is required.</mat-error>-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+
+      <div class="from form-flex">
+        <div style="width: 100%;">
+          <mat-label>Storage/Others *</mat-label>
+          <mat-form-field appearance="outline">
+            <mat-select formControlName="sizes" placeholder="Choose Storage/Others">
+              <mat-option [value]="null">None</mat-option>
+              <mat-option *ngFor="let data of sizes" [value]="data._id">
+                {{data.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="add-icon">
+          <a (click)="onToggle('size')"
+             [class]="sizeForm ? 'active' : ''">
+            <img [src]="
+                sizeForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-bottom: 20px" *ngIf="sizeForm">
+      <app-size-add (onAddData)="onAddNewSize($event)"></app-size-add>
+    </div> <!-- END! Size Input Form Component -->
+
+    <div style="margin-bottom: 20px" *ngIf="vendorForm">
+      <app-vendor-add (onAddData)="onAddNewVendor($event)"></app-vendor-add>
+    </div> <!-- END! Vendor Input Form Component -->
+
+    <div class="grid">
+
+
+<!--      <div class="from form-flex">-->
+<!--        <div style="width: 100%;">-->
+<!--          <mat-label>Category *</mat-label>-->
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-select formControlName="category" placeholder="Choose Category" (selectionChange)="onCategorySelect($event)" required>-->
+<!--              <mat-option *ngFor="let data of categories" [value]="data._id">-->
+<!--                {{data.name}}-->
+<!--              </mat-option>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
+<!--        </div>-->
+
+<!--        <div class="add-icon">-->
+<!--          <a (click)="onToggle('category')"-->
+<!--             [class]="categoryForm ? 'active' : ''">-->
+<!--            <img [src]="-->
+<!--                categoryForm-->
+<!--                  ? './assets/images/svg/closes.svg'-->
+<!--                  : './assets/images/svg/plus1.svg'-->
+<!--              " alt="img"/></a>-->
+<!--        </div>-->
+<!--      </div>-->
+      <!-- <div class="from form-flex">-->
+      <!--        <div style="width: 100%;">-->
+      <!--          <mat-label>Sub Category</mat-label>-->
+      <!--          <mat-form-field appearance="outline">-->
+      <!--            <mat-select formControlName="subcategory" placeholder="Choose Sub Category" >-->
+      <!--              <mat-option *ngFor="let data of subCategories" [value]="data._id">-->
+      <!--                {{data.name}}-->
+      <!--              </mat-option>-->
+      <!--            </mat-select>-->
+      <!--          </mat-form-field>-->
+      <!--        </div>-->
+
+      <!--        <div class="add-icon">-->
+      <!--          <a (click)="onToggle('subCategory')"-->
+      <!--             [class]="subCategoryForm ? 'active' : ''">-->
+      <!--            <img [src]="-->
+      <!--                subCategoryForm-->
+      <!--                  ? './assets/images/svg/closes.svg'-->
+      <!--                  : './assets/images/svg/plus1.svg'-->
+      <!--              " alt="img"/></a>-->
+      <!--        </div>-->
+      <!--      </div>-->
+
+      <!--      <div class="from">-->
+      <!--        <mat-label>Attribute</mat-label>-->
+      <!--        <mat-form-field appearance="outline">-->
+      <!--          <mat-select formControlName="attribute" placeholder="Choose Attribute">-->
+      <!--            <mat-option *ngFor="let data of attributes" [value]="data._id">-->
+      <!--              {{data.name}}-->
+      <!--            </mat-option>-->
+      <!--          </mat-select>-->
+      <!--        </mat-form-field>-->
+      <!--      </div>-->
+
+      <div class="from form-flex">
+        <div style="width: 100%;">
+          <mat-label>Color</mat-label>
+          <mat-form-field appearance="outline">
+            <mat-select formControlName="colors" placeholder="Choose color">
+              <mat-option [value]="null">None</mat-option>
+              <mat-option *ngFor="let data of colors" [value]="data._id">
+                {{data.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="add-icon">
+          <a (click)="onToggle('color')"
+             [class]="colorForm ? 'active' : ''">
+            <img [src]="
+                colorForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+        </div>
+      </div>
+
+      <div class="from">
+        <mat-label>Purchase Price *</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="purchasePrice" type="number" placeholder="Enter purchase price" matInput required
+                 digitOnly allowNegatives="true" pattern="^\d+(\.\d{1,2})?$"
+                 [decimal]="true"/>
+        </mat-form-field>
+      </div>
+
+
+      <div class="from down1" >
+        <mat-label class="ricieveDesign">Payby</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="payby">
+            <mat-option *ngFor="let data of paymentTypes" [value]="data.value"> {{data.viewValue}}</mat-option>
+            <!--              <mat-option value="bkash"> Card</mat-option>-->
+            <!--              <mat-option value="mobile-banking"> Mobile Banking</mat-option>-->
+            <!--              <mat-option value="banking"> Banking</mat-option>-->
+          </mat-select>
+          <mat-error>This field is required.</mat-error>
+        </mat-form-field>
+      </div>
+
+
+
+    </div>
+
+
+
+    <div style="margin-bottom: 20px" *ngIf="categoryForm">
+      <app-category-add (onAddData)="onAddNewCategory($event)"></app-category-add>
+    </div> <!-- END! Category Input Form Component -->
+
+    <div style="margin-bottom: 20px" *ngIf="subCategoryForm">
+      <app-sub-category-add (onAddData)="onAddNewSubCategory($event)"></app-sub-category-add>
+    </div> <!-- END! Sub Category Input Form Component -->
+
+    <div style="margin-bottom: 20px" *ngIf="colorForm">
+      <app-color-add (onAddData)="onAddNewColor($event)"></app-color-add>
+    </div> <!-- END! Color Input Form Component -->
+    <div class="heading">
+      <p>Customer Information</p>
+    </div>
+
+    <div class="grid">
+
+      <div class="from">
+        <mat-label>Customer Name *</mat-label>
+        <mat-form-field appearance="outline">
+          <input required formControlName="customerName" type="text" placeholder="Enter name" matInput/>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>NRIC/FIN *</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="nric" type="text" required placeholder="Enter nric/fin" matInput/>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>Phone No *</mat-label>
+        <mat-form-field appearance="outline">
+          <input required formControlName="phoneNo" type="text" placeholder="Enter phone" matInput/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Postal Code </mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="postCode" type="text" placeholder="Enter postal code" matInput/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>In-person name *</mat-label>
+        <mat-form-field appearance="outline">
+          <input required formControlName="personName" type="text" placeholder="Enter person name" matInput/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Address</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="address" type="text" placeholder="Enter address" matInput/>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>Unit-No</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="unitNo" type="text" placeholder="Enter unit-no" matInput/>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+
+        <mat-form-field appearance="outline" style="width: 380px;">
+          <mat-label class="note">Note</mat-label>
+
+          <textarea matInput formControlName="note"></textarea>
+        </mat-form-field>
+      </div>
+    </div>
+
+
+    <div class="grid">
+
+
+
+    </div>
+
+<!--    <div class="grid">-->
+
+<!--      <div class="from">-->
+<!--        <mat-label>Note</mat-label>-->
+<!--        <mat-form-field appearance="outline">-->
+<!--          <input formControlName="note" type="text" placeholder="Enter note" matInput/>-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+<!--    </div>-->
+
+    <div class="grid">
+
+
+<!--      <div [class]="id ? 'quantity-row': '' " class="from">-->
+
+<!--        <div [class]="id ? 'from-qty': '' ">-->
+<!--          <mat-label> {{id ? 'Existing Quantity *' : 'Quantity *'}}</mat-label>-->
+<!--          <mat-form-field appearance="outline">-->
+<!--            <input formControlName="quantity" [readonly]="id" placeholder="Enter quantity" type="number"-->
+<!--                   required matInput digitOnly [allowNegatives]="true"/>-->
+<!--          </mat-form-field>-->
+<!--        </div>-->
+<!--        <div class="from-qty" *ngIf="id">-->
+<!--          <mat-label> {{id ? 'New Quantity *' : 'New Quantity *'}}</mat-label>-->
+<!--          <mat-form-field appearance="outline">-->
+<!--            <input formControlName="newQuantity" placeholder="Enter quantity" type="number"-->
+<!--                   matInput digitOnly [allowNegatives]="true"/>-->
+<!--          </mat-form-field>-->
+<!--        </div>-->
+
+<!--      </div>-->
+
+
+
+
+
+      <!--      <div class="from">-->
+      <!--        <mat-label>Sale Percent {{dataForm.value.editSalePrice ? '' : '*'}}</mat-label>-->
+      <!--        <mat-form-field appearance="outline">-->
+      <!--          <input type="number" formControlName="salePercent" placeholder="Enter sale percent" matInput [required]="dataForm.value.editSalePrice ? false : true"-->
+      <!--                 digitOnly allowNegatives="false" pattern="^\d+(\.\d{1,2})?$"-->
+      <!--                 [decimal]="true"/>-->
+      <!--        </mat-form-field>-->
+      <!--      </div>-->
+
+
+      <!--      [value]="salePrice"-->
+
+      <div>
+        <!--       <div class="checkbox">-->
+        <!--         <mat-checkbox color="primary" formControlName="editSalePrice">-->
+        <!--           Edit Sale Price-->
+        <!--         </mat-checkbox>-->
+        <!--       </div>-->
+        <!--       [readonly]="!dataForm.value.editSalePrice"-->
+<!--        <div class="from">-->
+<!--          <mat-label>Sale Price *</mat-label>-->
+<!--          <mat-form-field appearance="outline">-->
+<!--            <input formControlName="salePrice" placeholder="Enter sale price" matInput required type="number"-->
+<!--                   allowNegatives="true" digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true"-->
+<!--                   [value]="!dataForm.value.editSalePrice ? salePrice : null"-->
+<!--            />-->
+<!--          </mat-form-field>-->
+<!--        </div>-->
+
+
+      </div>
+
+      <div >
+
+
+      </div>
+
+
+
+      <!--      <div class="form">-->
+      <!--        <mat-label>Expire Date</mat-label>-->
+      <!--        <mat-form-field appearance="outline" (click)="pickerExpire.open()" class="w-100 px-1">-->
+      <!--          <input readonly [matDatepicker]="pickerExpire" formControlName="expireDate" matInput-->
+      <!--                 placeholder="Enter expire date" [required]="false"> &lt;!&ndash;[min]="today" &ndash;&gt;-->
+      <!--          <mat-datepicker-toggle matSuffix [for]="pickerExpire"></mat-datepicker-toggle>-->
+      <!--          <mat-datepicker #pickerExpire></mat-datepicker>-->
+      <!--          <mat-error>This field is required</mat-error>-->
+      <!--        </mat-form-field>-->
+      <!--      </div>-->
+
+    </div>
+
+
+
+
+    <div class="grid">
+<!--      <div class="from">-->
+<!--        <mat-label>In-person Name* </mat-label>-->
+<!--        <mat-form-field appearance="outline" required>-->
+<!--          <input formControlName="salesman" placeholder="Enter name" matInput type="text"-->
+<!--          />-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+      <!--      <div class="from">-->
+      <!--        <mat-label>Code No</mat-label>-->
+      <!--        <mat-form-field appearance="outline">-->
+      <!--          <input formControlName="sku" required matInput placeholder="Enter code no"/>-->
+      <!--          <mat-error>This field is required</mat-error>-->
+      <!--        </mat-form-field>-->
+      <!--      </div>-->
+
+      <!--      <div class="from">-->
+      <!--        <mat-label>Unit</mat-label>-->
+      <!--        <mat-form-field appearance="outline">-->
+      <!--          <input formControlName="unit" matInput placeholder="Enter unit"/>-->
+      <!--        </mat-form-field>-->
+      <!--      </div>-->
+
+      <!--      <div class="from">-->
+      <!--        <mat-label>Model</mat-label>-->
+      <!--        <mat-form-field appearance="outline">-->
+      <!--          <input formControlName="model" matInput placeholder="Enter model"/>-->
+      <!--        </mat-form-field>-->
+      <!--      </div>-->
+      <!--      <div class="from">-->
+      <!--        <mat-label>Others</mat-label>-->
+      <!--        <mat-form-field appearance="outline">-->
+      <!--          <input formControlName="others" matInput placeholder="Enter others information.."/>-->
+      <!--        </mat-form-field>-->
+      <!--      </div>-->
+    </div>
+
+
+    <br>
+    <div class="btn">
+      <button *ngIf="!isLoading" mat-raised-button type="submit"
+              class="btn-submit">{{id ? 'Update' : 'Submit'}} </button>
+      <button *ngIf="isLoading" mat-raised-button type="button" class="btn-submit" disabled>Please wait...</button>
+      <button type="button" [routerLink]="id ? '../../all-buy-back' : '../all-buy-back'" mat-raised-button class="btn-submit color">Go
+        Back
+      </button>
+
+<!--      <button *ngIf="isBarcode"  [routerLink]="['/inventory/barcode-generate/', barcodeId]" mat-raised-button class="btn-submit barcode-color">Generate Barcode-->
+<!--      </button>-->
+    </div>
+  </form>
+</section>
+
+<!-- TEMPLATE NGX SPINNER-->
+<ngx-spinner bdColor="rgba(0,0,0,0.3)" size="medium" color="#fff" type="ball-scale-pulse" [fullScreen]="true">
+  <p style="color: white"> Loading... </p>
+</ngx-spinner>

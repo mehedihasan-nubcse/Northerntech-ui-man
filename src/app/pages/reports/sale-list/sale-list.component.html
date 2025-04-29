@@ -1,0 +1,216 @@
+<section class="page-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Top Sale Product</h4>
+      <h6>Manage your top sale product</h6>
+    </div>
+  </div>
+</section> <!-- END Header Area -->
+
+
+<section class="table-section" id="sale-list-table-view">
+  <div class="mat-elevation-z8">
+    <div class="table-top">
+      <div class="date-filter">
+        <mat-form-field
+          class="mat-date-input-field"
+          appearance="outline"
+          (click)="picker.open()"
+        >
+          <mat-label class="filter-date">Filter Date</mat-label>
+          <mat-date-range-input
+            [formGroup]="dataFormDateRange"
+            [rangePicker]="picker"
+            [max]="today"
+          >
+            <input
+              matStartDate
+              formControlName="start"
+              placeholder="Start date"
+              readonly
+            />
+            <input
+              matEndDate
+              formControlName="end"
+              placeholder="End date"
+              readonly
+              (dateChange)="endChangeRegDateRange($event)"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+
+          <mat-error
+            *ngIf="
+              dataFormDateRange.controls.start.hasError('matStartDateInvalid')
+            "
+          >Invalid start date
+          </mat-error>
+          <mat-error
+            *ngIf="dataFormDateRange.controls.end.hasError('matEndDateInvalid')"
+          >Invalid end date
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="sort">
+        <button mat-raised-button [matMenuTriggerFor]="menuMonth" class="button-style">
+          {{months[activeFilterMonth]?.viewValue || 'Month'}}
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+        <mat-menu #menuMonth="matMenu">
+          <button
+            *ngFor="let data of months; let i = index"
+            mat-menu-item
+            (click)="filterData(data.value, i, 'month')"
+            [class.dropdown-active]="activeFilterMonth === i"
+          >
+            {{ data?.viewValue }}
+          </button>
+        </mat-menu>
+      </div>
+
+
+      <div class="sort">
+        <button mat-raised-button [matMenuTriggerFor]="menuCategory" class="button-style">
+          {{categories[activeFilterCategory]?.name || 'Category'}}
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+        <mat-menu #menuCategory="matMenu" >
+          <button
+            *ngFor="let data of categories; let i = index"
+            mat-menu-item
+            (click)="onCategorySelect(data.name, i, data._id)"
+            [class.dropdown-active]="activeFilterCategory === i"
+          >
+            {{ data?.name }}
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="sort">
+        <button mat-raised-button [matMenuTriggerFor]="menuSubCategory" class="button-style">
+          {{subCategories[activeFilterSubCategory]?.name || 'SubCategory'}}
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+        <mat-menu #menuSubCategory="matMenu" >
+          <button
+            *ngFor="let data of subCategories; let i = index"
+            mat-menu-item
+            (click)="onSubCategorySelect(data.name, i)"
+            [class.dropdown-active]="activeFilterSubCategory === i"
+          >
+            {{ data?.name }}
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="sort">
+        <button mat-raised-button class="button-style" (click)="exportToAllExcel()">
+          Export as Excel
+          <mat-icon>file_download</mat-icon>
+        </button>
+      </div>
+
+    </div> <!-- END Table Top -->
+
+    <!--    <div class="total-calc">-->
+    <!--      <div class="card-border">-->
+    <!--        <h2>Total Amount: {{calculation?.grandTotal ?? 0 | number: '' : 'bn'}}</h2>-->
+    <!--      </div>-->
+    <!--    </div>-->
+
+    <div
+      class="container filter-area">
+      <div
+        class="left"
+        style="margin-bottom: 10px"
+        *ngIf="!isDefaultFilter && (filter || activeSort)"
+      >
+        <div>
+          <button mat-stroked-button (click)="onRemoveAllQuery()">
+            <mat-icon>close</mat-icon>
+            Clear FilterData
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-area" *ngIf="selectedIds && selectedIds.length">
+      <div class="delete-area">
+        <button
+          *ngIf="checkDeletePermission"
+          mat-stroked-button
+          color="warn"
+          (click)="openConfirmDialog('delete')"
+          matTooltip="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <app-no-content
+      *ngIf="!isLoading && !sales.length"
+      [matIcon]="'info'"
+      title="No data Found!"
+    ></app-no-content>
+
+    <div>
+      <!--      <div class="header">-->
+      <!--        <h2>{{ data?._id | date }}</h2>-->
+      <!--      </div>-->
+      <div class="container">
+        <div class="table-responsive">
+          <table *ngIf="sales.length" #dataTable id="reports-sale-list">
+            <tr class="table-row">
+              <th>Product Name</th>
+              <th>Quantity</th>
+              <th>Purchase Price</th>
+              <th>Total Purchase Price</th>
+              <th>Sale Price</th>
+              <th>Total Sale Price</th>
+              <th>Percent(%)</th>
+              <th class="action-hide-on-export">Action</th>
+            </tr>
+            <tr *ngFor="let data of reportsData | sort: 'soldQuantity';" class="table-hover" [ngClass]="{ 'row-selected': data.select }">
+              <td>{{ data?.productName }}</td>
+              <td> {{ data?.soldQuantity }}</td>
+              <td>{{ shopInformation?.currency | currencyIcon }} {{ data?.purchasePrice }}</td>
+              <td>{{ shopInformation?.currency | currencyIcon }} {{(data?.soldQuantity ) * (data?.purchasePrice ) | number:'2.2-2' }}</td>
+              <td>{{ shopInformation?.currency | currencyIcon }} {{data?.salePrice }}</td>
+              <td>{{ shopInformation?.currency | currencyIcon }} {{(data?.soldQuantity ) * (data?.salePrice ) | number:'2.2-2'}}</td>
+<!--              <td>{{ ((data?.salePrice * data?.soldQuantity) - (data?.purchasePrice * data?.soldQuantity) - data?.discount) | number:'2.2-2'}}</td>-->
+              <td>{{ getProductPercent(data)}}</td>
+
+              <td class="action-hide-on-export">
+                <button
+                  matTooltip="View Product"
+                  mat-mini-fab
+                  color="accent"
+                  [routerLink]="['/reports/product-sale-details/', data.productId]"
+                >
+                  <mat-icon>visibility</mat-icon>
+                </button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMPLATE NGX SPINNER-->
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.3)"
+  size="medium"
+  color="#fff"
+  type="ball-scale-pulse"
+  [fullScreen]="true"
+>
+  <p style="color: white">Loading...</p>
+</ngx-spinner>

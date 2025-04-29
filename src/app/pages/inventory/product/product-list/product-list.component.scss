@@ -1,0 +1,27 @@
+@import "/src/theme/exports/table-list";
+.table-top .search-set .search-input input {
+  width: 460px!important;
+}
+
+.calculation {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 10px 15px;
+  .content {
+    width: 300px;
+    height: 180px;
+    background: #ffe4d9;
+    border-radius: 10px;
+  }
+}
+
+.hiddenInput{
+  display: none;
+}
+.button-style{
+  width: 120px;
+}
+.row-selected {
+  background-color: #d6f2fd; /* Light blue background for selected rows */
+}

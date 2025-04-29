@@ -1,0 +1,187 @@
+<!--<div  id="payment-type-list-print-table" >-->
+<!--  <table >-->
+<!--    <tr>-->
+<!--      <th>Name</th>-->
+<!--      <th>Purchase Price</th>-->
+<!--      <th>Sales Price</th>-->
+<!--    </tr>-->
+<!--    <tr *ngFor="let data of products">-->
+<!--      <td>-->
+<!--        {{ data?.name }}-->
+<!--      </td>-->
+<!--      <td>-->
+<!--        {{ data?.purchasePrice}}-->
+<!--      </td>-->
+
+<!--      <td>-->
+<!--        {{ data?.salePrice}}-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--  </table>-->
+<!--</div>-->
+
+
+
+
+<div class="my-table" >
+
+  <div class="shopInfo">
+    <p>{{shopInformation?.siteName}}</p>
+  </div>
+
+  <div>
+    <div class="header">
+      <p style="font-size: 18px; margin-left: 20px;">Date: {{today | date}}</p>
+    </div>
+  </div>
+
+  <table style="
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 18px;"
+  >
+    <tr>
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Name</th>
+
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Category</th>
+
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Color</th>
+
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Storage</th>
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">Imei</th>-->
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">Purchase Price</th>-->
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">Sales Price</th>-->
+
+
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Qty</th>
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">T P.P</th>-->
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">Total Amount</th>-->
+<!--    </tr>-->
+
+
+
+    <tr *ngFor="let data of products">
+      <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+        {{data?.name}}
+      </td>
+
+      <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+        {{  data?.category?.name || "-" }}
+      </td>
+
+
+<td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+        {{  data?.colors?.name || "-" }}
+      </td>
+
+      <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+        {{ data?.sizes?.name || "-" }}
+      </td>
+<!--    <td style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{ data?.imei || "-" }}-->
+<!--      </td>-->
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{ data?.purchasePrice | number : "" : "bn" || "-" }}-->
+<!--      </td>-->
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{ data?.salePrice | number : "" : "bn" || "-" }}-->
+<!--      </td>-->
+
+      <td  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+        {{ data?.quantity || "0" }}
+      </td>
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{data?.purchasePrice * data?.quantity | number : "" : "bn" || "-"}}-->
+<!--      </td>-->
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{ data?.salePrice * data?.quantity | number : "" : "bn" || "-" }}-->
+<!--      </td>-->
+    </tr>
+
+    <tr class="table-hover" style="background: #fff5ea">
+      <!--            <td></td>-->
+      <td style="font-weight: bold">Total:</td>
+      <td></td>
+      <td></td>
+<!--      <td></td>-->
+      <td></td>
+      <td style="font-weight: bold">
+        {{ productCalculation?.totalQuantity | number : "" : "bn"}}
+      </td>
+      <!--            <td></td>-->
+    </tr>
+  </table>
+</div>
+
+

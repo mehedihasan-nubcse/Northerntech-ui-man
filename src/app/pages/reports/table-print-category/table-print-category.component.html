@@ -1,0 +1,287 @@
+
+
+<div class="my-table"   *ngFor="let categoryData of categoryReportsData" (blur)="allCategoryData(categoryData)">
+  <div class="shopInfo">
+    <p>{{shopInformation?.shopNumber}}</p>
+    <p>{{shopInformation?.siteName}}</p>
+    <p *ngIf="shopInformation?.addresses">{{ shopInformation?.addresses[0]?.value}}</p>
+  </div>
+  <div>
+    <h1 style="font-size: 18px; margin-bottom: 0">{{ categoryData?.invoiceTitle }}</h1>
+    <div class="header">
+      <p style="font-size: 14px">{{shopInformation?.siteName}}</p>
+      <p *ngIf="isDefaultFilter" style="font-size: 14px">Date: {{myDate | date}}</p>
+      <p *ngIf="!isDefaultFilter" style="font-size: 14px">Date:  {{(dataFormDateRange.value.start | date) === (dataFormDateRange.value.end | date) ? (dataFormDateRange.value.start | date) : (dataFormDateRange.value.start | date) + ' -' + (dataFormDateRange.value.end | date)}}</p>
+    </div>
+  </div>
+  <table style="
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 40px;
+    font-size: 18px;"
+  >
+    <tr>
+      <th style="width: 25px">S/N</th>
+
+      <th>ITEM</th>
+
+      <th style="width: 60px">QTY</th>
+
+      <th>PRICE</th>
+
+      <th>COST</th>
+
+      <th>PROFIT</th>
+
+      <th>NOTES</th>
+
+
+    <tr *ngFor="let data of categoryData?.data; let i= index">
+
+      <td>
+        {{ i+1 }}
+      </td>
+      <td>
+        {{ data?.productName }}
+<!--        {{utilsService.getProductName(data)}}-->
+      </td>
+
+      <td>
+        {{  data?.soldQuantity || "-" }}
+      </td>
+
+
+      <td>
+        ${{(data?.soldQuantity ) * (data?.salePrice ) | number}}
+      </td>
+
+      <td >
+        ${{(data?.soldQuantity ) * (data?.purchasePrice ) | number }}
+      </td>
+
+
+      <td>
+        ${{ ((data?.soldQuantity ) * (data?.salePrice ) - (data?.soldQuantity ) * (data?.purchasePrice )) | number}}
+      </td>
+
+      <!--    <td>-->
+      <!--      {{ data?.paymentType ?? '-' | uppercase}}-->
+      <!--      </td> -->
+<!--      <td class="payment" *ngIf="data?.multiPayment.length">-->
+<!--      <span class="option" *ngFor="let d of data?.multiPayment;let i = index">-->
+<!--        {{ d?.name ?? '-' | uppercase}} ${{ d?.amount ?? '0' }} <span *ngIf="i !== data?.multiPayment.length-1">,</span>-->
+<!--      </span>-->
+<!--      </td>-->
+
+<!--      <td class="payment" *ngIf="!data?.multiPayment.length">-->
+<!--      <span class="option">-->
+<!--        - -->
+<!--      </span>-->
+<!--      </td>-->
+
+
+    <td class="payment" *ngIf="data?.multiPayments.length">
+      <span class="option" *ngFor="let d of data?.multiPayments;let i = index">
+       <span [ngClass]="d?.name === 'pay-now' || d?.name === 'nets'? 'payment-method-name' : ''">{{ d?.name ?? '-' | uppercase}}</span>  <span [ngClass]="d?.name === 'pay-now' || d?.name === 'nets'? 'payment-method-name' : ''"  *ngIf="data?.multiPayments.length>1"> ${{ d?.amount ?? '0' }}</span>    <span [ngClass]="d?.name === 'pay-now' || d?.name === 'nets'? 'payment-method-name' : ''" *ngIf="data?.multiPayments.length<2"> ${{ ((data?.soldQuantity ) * (data?.salePrice ))?? 0 }}</span>   <span *ngIf="i !== data?.multiPayments.length-1">,</span>
+      </span>
+      <br>
+      <span class="option category" *ngIf="data?.multiPayments.length>1">{{data?.paymentCategory}}</span>
+    </td>
+
+    <td class="payment" *ngIf="!data?.multiPayments.length">
+      <span class="option">
+        -
+      </span>
+    </td>
+
+
+
+    </tr>
+
+    <tr class="table-hover" >
+      <td></td>
+      <td style="font-weight: bold">SUB-TOTAL AMOUNT:</td>
+      <td>{{totalQuantity(categoryData?.data)}} </td>
+      <td style="font-weight: bold">${{totalSalePrice(categoryData?.data) | number : '': 'bn'}}</td>
+      <td style="font-weight: bold">${{totalPurchasePrice(categoryData?.data).toFixed(2)}}</td>
+      <td style="font-weight: bold" >
+        ${{totalProfitPrice(categoryData?.data).toFixed(2)}}
+      </td>
+      <td></td>
+    </tr>
+  </table>
+
+</div>
+
+
+
+
+
+
+<div class="my-table"  *ngIf="processedData.length">
+  <div class="shopInfo">
+    <p>{{shopInformation?.shopNumber}}</p>
+    <p>{{shopInformation?.siteName}}</p>
+    <p *ngIf="shopInformation?.addresses">{{ shopInformation?.addresses[0]?.value}}</p>
+  </div>
+  <div>
+    <h1 style="font-size: 18px; margin-bottom: 0">{{ shopInformation.sellerName }}</h1>
+    <div class="header">
+      <p style="font-size: 14px">{{shopInformation?.siteName}}</p>
+      <p *ngIf="isDefaultFilter" style="font-size: 14px">Date: {{myDate | date}}</p>
+      <p *ngIf="!isDefaultFilter" style="font-size: 14px">Date:  {{(dataFormDateRange.value.start | date) === (dataFormDateRange.value.end | date) ? (dataFormDateRange.value.start | date) : (dataFormDateRange.value.start | date) + ' -' + (dataFormDateRange.value.end | date)}}</p>
+    </div>
+  </div>
+
+
+
+  <table
+         style="
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 8%;
+    font-size: 18px;"
+  >
+    <tr>
+      <th style="width: 25px">S/N</th>
+
+      <th style="width: 48%">Item</th>
+
+      <th style="width: 80px">Amount</th>
+      <th style="width: 80px">Cost</th>
+      <th style="width: 80px">Profit</th>
+
+
+    </tr>
+    <tr *ngFor="let data of processedData;let i = index">
+      <td >{{i+1}}</td>
+      <td>{{data?.invoiceTitle}}</td>
+      <td>${{data?.totalSale | number : '': 'bn'}}</td>
+      <td>${{data?.totalPurchasePrice | number : '': 'bn'}}</td>
+      <td>${{data?.totalProfit | number : '': 'bn'}}</td>
+      <!--      <td></td>-->
+    </tr>
+
+
+
+    <tr class="table-hover" >
+      <td></td>
+      <td style="font-weight: bold">TOTAL AMOUNT:</td>
+      <td>${{getProcessedData() | number : '': 'bn'}}</td>
+      <td>${{getProcessedDataPurchasePrice() | number : '': 'bn'}}</td>
+      <td>${{getProcessedDataProfit() | number : '': 'bn'}}</td>
+
+  </table>
+
+  <table
+         style="
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 18px;"
+  >
+    <tr>
+      <th style="width: 25px">S/N</th>
+
+      <th style="width: 48%">PAYOUT</th>
+
+      <th style="width: 80px">AMOUNT</th>
+
+      <th style="width: 180px" rowspan="2">TOTAL SALES:</th>
+<!--      <th style="width: 60px" rowspan="2" colspan="2">${{getProcessedData() + getAllRepairAmount()}}</th>-->
+      <th style="width: 60px" rowspan="2" colspan="2">${{getProcessedData()}}</th>
+    <tr>
+      <td >1</td>
+      <td>{{payouts[0]?.expenseFor}}</td>
+      <td>{{payouts[0]?.amount}}</td>
+      <!--      <td></td>-->
+    </tr>
+
+    <tr>
+      <td>2</td>
+      <td>{{payouts[1]?.expenseFor}}</td>
+      <td>{{payouts[1]?.amount}}</td>
+      <td>Nets:</td>
+      <td style="color: darkred" colspan="2">${{getPaymentTypeAmount('nets')}}</td>
+    </tr>
+
+    <tr>
+      <td>3</td>
+      <td>{{payouts[2]?.expenseFor}}</td>
+      <td>{{payouts[2]?.amount}}</td>
+      <td>V/M:</td>
+      <td style="color: darkred" colspan="2">${{getPaymentTypeAmount('visa-card')}}</td>
+    </tr>
+
+    <tr>
+      <td>4</td>
+      <td>{{payouts[3]?.expenseFor}}</td>
+      <td>{{payouts[3]?.amount}}</td>
+      <td>Paynow:</td>
+      <td style="color: darkred" colspan="2">${{getPaymentTypeAmount('pay-now')}}</td>
+    </tr>
+
+    <tr>
+      <td>5</td>
+      <td>{{payouts[4]?.expenseFor}}</td>
+      <td>{{payouts[4]?.amount}}</td>
+      <td>Cash:</td>
+      <td colspan="2">${{getPaymentTypeAmount('cash')}}</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>{{payouts[5]?.expenseFor}}</td>
+      <td>{{payouts[5]?.amount}}</td>
+      <td>Overall Pay Out</td>
+      <td colspan="2">${{getPayAmount()}}</td>
+    </tr>
+
+    <tr>
+      <td>7</td>
+      <td>{{payouts[6]?.expenseFor}}</td>
+      <td>{{payouts[6]?.amount}}</td>
+      <td rowspan="2">NET CASH: </td>
+      <td rowspan="2" colspan="2">${{getPaymentTypeAmount('cash') - getPayAmount()}}</td>
+
+    </tr>
+
+    <tr>
+      <td>8</td>
+      <td>{{payouts[7]?.expenseFor}}</td>
+      <td>{{payouts[7]?.amount}}</td>
+
+       </tr>
+
+<!--    <tr>-->
+<!--      <td>9</td>-->
+<!--      <td>{{payouts[8]?.expenseFor}}</td>-->
+<!--      <td>{{payouts[8]?.amount}}</td>-->
+<!--    </tr>-->
+
+    <tr class="table-hover" >
+      <td></td>
+      <td style="font-weight: bold">TOTAL AMOUNT:</td>
+      <td>${{getPayAmount()}}</td>
+      <td>
+        <div class="extra">
+          <p style="border-right: 1px solid #000">EXTRA</p>
+          <p></p>
+        </div>
+      </td>
+      <!--      <td></td>-->
+      <td colspan="2">
+        <div class="extra">
+          <p style="border-right: 1px solid #000">SORTAGE</p>
+          <p></p>
+        </div>
+      </td>
+      <!--      <td></td>-->
+    </tr>
+  </table>
+</div>
+
+
+
+

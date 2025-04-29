@@ -1,0 +1,66 @@
+
+// Core
+@import "src/theme/base";
+@import "src/theme/material/theme";
+@import "src/theme/fonts";
+
+
+
+.my-custom-dialog-class {
+    .mat-dialog-container {
+      height: auto!important;
+    }
+  }
+.row-selected {
+  background-color: #d6f2fd; /* Light blue background for selected rows */
+}
+::ng-deep.mat-form-field-appearance-outline .mat-form-field-outline {
+  color:  #137abd !important;
+}
+@media print {
+
+  body * {
+    visibility: hidden;
+  }
+
+  #new-sale-section {
+    display: none;
+  }
+
+  #sale-list-table-view {
+    display: none;
+  }
+
+  #section-pos-print, #section-pos-print * {
+    visibility: visible;
+  }
+  #section-pos-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  #section-pos-print1, #section-pos-print1 * {
+    visibility: visible;
+  }
+  #section-pos-print1 {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  #list-pos-print, #list-pos-print * {
+    visibility: visible;
+  }
+
+  #list-pos-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+    max-height: 400px;
+  }
+  @page {
+    margin: 40px 20px 10px; /* Adjusts margins: Top and sides stay, bottom is removed */
+  }
+
+}

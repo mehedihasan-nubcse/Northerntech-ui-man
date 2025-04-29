@@ -1,0 +1,55 @@
+@import "/src/theme/exports/_add-from.scss";
+
+.form-area{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 10px;
+
+}
+.from-section{
+  ::ng-deep.mat-form-field-appearance-outline .mat-form-field-outline {
+    color: #137ABD;
+  }
+  ::ng-deep.mat-form-field-appearance-outline.mat-form-field-invalid.mat-form-field-invalid .mat-form-field-outline-thick {
+    color: #cc0000;
+  }
+}
+.form-flex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.add-icon {
+  cursor: pointer;
+
+  a {
+
+    width: 40px;
+    height: 40px;
+    background: #137ABD;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+
+    img {
+      width: 25px;
+    }
+
+    &.active {
+      background-color: #EA5455;
+
+      img {
+        width: 12px;
+      }
+    }
+
+    &:hover {
+      background: #212b36;
+    }
+  }
+}
+

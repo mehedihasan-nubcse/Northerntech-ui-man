@@ -1,0 +1,602 @@
+
+
+
+<div class="action-header">
+
+  <div class="sort">
+    <h1 class="branch-title">
+    Current Branch Name : {{shopName}}
+    </h1>
+
+    </div>
+
+
+<!--  <div class="filter-div" *ngIf="USER_ROLE === 'super_admin'">-->
+  <div class="filter-div">
+    <div class="sort">
+      <button mat-raised-button [matMenuTriggerFor]="menuDropdownShop" color="primary">
+        {{allShop[activeFilter1]?.name || 'Branch Name'}}
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+      <mat-menu #menuDropdownShop="matMenu">
+        <button
+          *ngFor="let data of allShop; let i = index"
+          mat-menu-item
+          (click)="onSelect(data._id)"
+          [class.dropdown-active]="activeFilter1 === i"
+        >
+          {{ data?.name }}
+        </button>
+      </mat-menu>
+    </div>
+
+    <div class="sort">
+      <button mat-raised-button [matMenuTriggerFor]="menuDropdown" color="primary">
+        {{reportFilters[activeFilter]?.viewValue}}
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
+      <mat-menu #menuDropdown="matMenu">
+        <button
+          *ngFor="let data of reportFilters; let i = index"
+          mat-menu-item
+          (click)="filterData(data.value)"
+          [class.dropdown-active]="activeFilter === i"
+        >
+          {{ data?.viewValue }}
+        </button>
+      </mat-menu>
+    </div>
+  </div>
+
+</div> <!-- END Action Header -->
+
+
+<div class="section1">
+  <div class="section1-main">
+    <!---card-->
+    <div
+      class="card"
+      routerLink="sales/sales-list"
+      [routerLink]="['../sales/sales-list']"
+    >
+      <div class="card-top">
+        <div class="card-top-left">
+          <h3>Today Sale</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon class="material-symbols-outlined">
+              point_of_sale
+            </mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Today Sale">
+          <h3>
+            {{shopInformation?.currency | currencyIcon}}   {{
+            saleDashboard?.totalSale
+              ? (saleDashboard?.totalSale | number : "" : "bn")
+              : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Today Sale">
+            <mat-icon>show_chart</mat-icon>
+          </h5>
+        </div>
+      </div>
+    </div>
+    <!---card-->
+    <div class="card" [routerLink]="['../inventory/purchase-history']">
+      <div class="card-top">
+        <div class="card-top-left">
+          <h3>Purchase Cost</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon>task</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Invoice">
+          <h3>
+            {{shopInformation?.currency | currencyIcon}}     {{
+            saleDashboard?.totalCost > 0
+              ? (saleDashboard?.totalCost | number : "" : "bn")
+              : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Invoice">
+            <mat-icon>show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+    <!---card-->
+
+    <!---card-->
+    <div class="card" routerLink="/statement/statement-list">
+      <div class="card-top">
+        <div class="card-top-left">
+          <h3>Total Av. Profit</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon>leaderboard</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total work direction today">
+          <h3>
+            {{shopInformation?.currency | currencyIcon}}    {{
+            saleDashboard?.totalProfit > 0
+              ? (saleDashboard?.totalProfit | number : "" : "bn")
+              : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Work direction done percentage today">
+            <mat-icon>show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section1-main">
+    <!---card-->
+    <div class="card" [routerLink]="['../expense/expense-list']">
+      <div class="card-top" style="background-color: rgb(47 94 179)">
+        <div class="card-top-left">
+          <h3>Expense</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon class="material-symbols-outlined"> inventory_2</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Today Expense">
+          <h3 style="color: rgb(47 94 179)">
+            {{shopInformation?.currency | currencyIcon}}      {{
+            saleDashboard?.totalExpense
+              ? (saleDashboard?.totalExpense | number : "" : "bn")
+              : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Today Expense">
+            <mat-icon style="color: rgb(47 94 179)">show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" [routerLink]="['../income/income-list']">
+      <div class="card-top" style="background-color: rgb(131, 70, 138)">
+        <div class="card-top-left">
+          <h3>Income</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon class="material-symbols-outlined">payments</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Today Expense">
+          <h3 style="color: rgb(131, 70, 138)">
+            {{shopInformation?.currency | currencyIcon}}     {{
+            saleDashboard?.totalIncome
+              ? (saleDashboard?.totalIncome | number : "" : "bn")
+              : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Today Expense">
+            <mat-icon style="color: rgb(47 94 179)">show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+
+    <!---card-->
+    <div class="card" routerLink="/statement/statement-list">
+      <div class="card-top" style="background-color: #ef0000b8">
+        <div class="card-top-left">
+          <h3>Loss</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon class="material-symbols-outlined">flowsheet</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Loss">
+          <h3 style="color: #ef0000b8">
+            {{shopInformation?.currency | currencyIcon}}    {{
+            saleDashboard?.totalLoss > 0
+              ? (saleDashboard?.totalLoss | number : "" : "bn")
+              : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Loss">
+            <mat-icon style="color: #ef0000b8">show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+
+
+    <!---card-->
+    <div class="card" [routerLink]="['../inventory/product-list']" *ngIf="shopName !== 'Online store'">
+      <div class="card-top" style="background: #00bbcc">
+        <div class="card-top-left">
+          <h3>Total Phone Amount</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon>task</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Invoice">
+          <h3>
+            {{shopInformation?.currency | currencyIcon}}     {{
+              saleDashboard?.totalNewPhoneAmount > 0
+                ? ((saleDashboard?.totalNewPhoneAmount + saleDashboard?.total2HandAmount) | number : "" : "bn")
+                : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Invoice">
+            <mat-icon>show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+    <!---card-->
+
+
+    <!---card-->
+    <div class="card" [routerLink]="['../inventory/product-list']" *ngIf="shopName === 'Online store'">
+      <div class="card-top" style="background: #00bbcc">
+        <div class="card-top-left">
+          <h3>Total Phone Amount</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon>task</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Invoice">
+          <h3>
+            {{shopInformation?.currency | currencyIcon}}     {{
+              ((saleDashboard?.totalNewPhoneAmount + saleDashboard?.total2HandAmount + saleDashboard?.totalDisplayAmount + saleDashboard?.totalExportAmount) | number : "" : "bn")
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Invoice">
+            <mat-icon>show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+    <!---card-->
+
+<!--    <div class="card" [routerLink]="['../inventory/product-list']" *ngIf="shopName === 'Online store'">-->
+<!--      <div class="card-top" style="background: #00bbcc">-->
+<!--        <div class="card-top-left">-->
+<!--          <h3>Total Display Set</h3>-->
+<!--        </div>-->
+<!--        <div class="card-top-right">-->
+<!--          <div class="card-icon">-->
+<!--            <mat-icon>task</mat-icon>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="card-body">-->
+<!--        <div class="card-number" matTooltip="Total Invoice">-->
+<!--          <h3>-->
+<!--            {{shopInformation?.currency | currencyIcon}}     {{-->
+<!--              saleDashboard?.totalDisplayAmount > 0-->
+<!--                ? ((saleDashboard?.totalDisplayAmount) | number : "" : "bn")-->
+<!--                : 0-->
+<!--            }}-->
+<!--          </h3>-->
+<!--        </div>-->
+<!--        <div class="card-activity">-->
+<!--          <h5 matTooltip="Total Invoice">-->
+<!--            <mat-icon>show_chart</mat-icon>-->
+<!--            &lt;!&ndash;            {{0}}%&ndash;&gt;-->
+<!--          </h5>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash;-card&ndash;&gt;-->
+<!--    <div class="card" [routerLink]="['../inventory/product-list']" *ngIf="shopName === 'Online store'">-->
+<!--      <div class="card-top" style="background: #00bbcc">-->
+<!--        <div class="card-top-left">-->
+<!--          <h3>Total Export Set Amount</h3>-->
+<!--        </div>-->
+<!--        <div class="card-top-right">-->
+<!--          <div class="card-icon">-->
+<!--            <mat-icon>task</mat-icon>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="card-body">-->
+<!--        <div class="card-number" matTooltip="Total Invoice">-->
+<!--          <h3>-->
+<!--            {{shopInformation?.currency | currencyIcon}}     {{-->
+<!--              saleDashboard?.totalExportAmount > 0-->
+<!--                ? ((saleDashboard?.totalExportAmount ) | number : "" : "bn")-->
+<!--                : 0-->
+<!--            }}-->
+<!--          </h3>-->
+<!--        </div>-->
+<!--        <div class="card-activity">-->
+<!--          <h5 matTooltip="Total Invoice">-->
+<!--            <mat-icon>show_chart</mat-icon>-->
+<!--            &lt;!&ndash;            {{0}}%&ndash;&gt;-->
+<!--          </h5>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    &lt;!&ndash;-card&ndash;&gt;-->
+
+    <div class="card" [routerLink]="['../inventory/product-list']" >
+      <div class="card-top" style="background: #00cc0d">
+        <div class="card-top-left">
+          <h3>Total Accessories Amount
+          </h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon>task</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Invoice">
+          <h3>
+            {{shopInformation?.currency | currencyIcon}}     {{
+              saleDashboard?.totalAccessoriesAmount > 0
+                ? (saleDashboard?.totalAccessoriesAmount | number : "" : "bn")
+                : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Invoice">
+            <mat-icon>show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" [routerLink]="['../inventory/product-list']" *ngIf="shopName !== 'Online store'">
+      <div class="card-top" style="background: #0085cc">
+        <div class="card-top-left">
+          <h3>Total Repair Amount
+          </h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon>task</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Invoice">
+          <h3>
+            {{shopInformation?.currency | currencyIcon}}     {{
+              saleDashboard?.totalRepairAmount > 0
+                ? (saleDashboard?.totalRepairAmount | number : "" : "bn")
+                : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Invoice">
+            <mat-icon>show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" [routerLink]="['../inventory/product-list']" *ngIf="shopName !== 'Online store'">
+      <div class="card-top">
+        <div class="card-top-left">
+          <h3>Total Stock Amount</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon>task</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Invoice">
+<!--          <h3>-->
+<!--            {{shopInformation?.currency | currencyIcon}}     {{-->
+<!--              saleDashboard?.totalStockAmount > 0-->
+<!--                ? (saleDashboard?.totalStockAmount | number : "" : "bn")-->
+<!--                : 0-->
+<!--            }}-->
+<!--          </h3>-->
+          <h3>{{shopInformation?.currency | currencyIcon}} {{(saleDashboard?.totalNewPhoneAmount + saleDashboard?.totalAccessoriesAmount + saleDashboard?.totalRepairAmount + saleDashboard?.total2HandAmount) | number}}</h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Invoice">
+            <mat-icon>show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+    <!---card-->
+
+    <div class="card" [routerLink]="['../inventory/product-list']" *ngIf="shopName === 'Online store'">
+      <div class="card-top">
+        <div class="card-top-left">
+          <h3>Total Stock Amount</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon>task</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Invoice">
+<!--          <h3>-->
+<!--            {{shopInformation?.currency | currencyIcon}}     {{-->
+<!--              saleDashboard?.totalStockAmount > 0-->
+<!--                ? (saleDashboard?.totalStockAmount | number : "" : "bn")-->
+<!--                : 0-->
+<!--            }}-->
+<!--          </h3>-->
+          <h3>{{shopInformation?.currency | currencyIcon}}  {{(saleDashboard?.totalNewPhoneAmount + saleDashboard?.total2HandAmount + saleDashboard?.totalExportAmount + saleDashboard?.totalDisplayAmount + saleDashboard?.totalAccessoriesAmount) | number}}</h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Invoice">
+            <mat-icon>show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+    <!---card-->
+    <div class="card" routerLink="/courier/all-courier">
+      <div class="card-top" style="background-color: #05ca77">
+        <div class="card-top-left">
+          <h3>Courier</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon class="material-symbols-outlined">card_giftcard</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Loss">
+          <h3 style="color: #05ca77">
+            {{shopInformation?.currency | currencyIcon}}   {{
+              saleDashboard?.totalCourier > 0
+                ? (saleDashboard?.totalCourier | number : "" : "bn")
+                : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Loss">
+            <mat-icon style="color: #05ca77">show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+
+    <!---card-->
+    <div class="card" routerLink="/purchase/vendor-transition-list">
+      <div class="card-top" style="background-color: #c80a0abd">
+        <div class="card-top-left">
+          <h3>Supplier Paid</h3>
+        </div>
+        <div class="card-top-right">
+          <div class="card-icon">
+            <mat-icon class="material-symbols-outlined">sell</mat-icon>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="card-number" matTooltip="Total Loss">
+          <h3 style="color: #c80a0abd">
+            {{shopInformation?.currency | currencyIcon}}   {{
+              saleDashboard?.totalVendorPaid ? (saleDashboard?.totalVendorPaid | number : "" : "bn") : 0
+            }}
+          </h3>
+        </div>
+        <div class="card-activity">
+          <h5 matTooltip="Total Loss">
+            <mat-icon style="color: #c80a0abd">show_chart</mat-icon>
+            <!--            {{0}}%-->
+          </h5>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!--<div class="section1" *ngIf="USER_ROLE === 'salesman'">-->
+<!--  <div class="section1-main">-->
+<!--    &lt;!&ndash;-card&ndash;&gt;-->
+<!--    <div-->
+<!--      class="card"-->
+<!--      routerLink="sales/sales-list"-->
+<!--      [routerLink]="['../sales/sales-list']"-->
+<!--    >-->
+<!--      <div class="card-top">-->
+<!--        <div class="card-top-left">-->
+<!--          <h3>Today Sale</h3>-->
+<!--        </div>-->
+<!--        <div class="card-top-right">-->
+<!--          <div class="card-icon">-->
+<!--            <mat-icon class="material-symbols-outlined">-->
+<!--              point_of_sale-->
+<!--            </mat-icon>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--      <div class="card-body">-->
+<!--        <div class="card-number" matTooltip="Today Sale">-->
+<!--          <h3>-->
+<!--            {{-->
+<!--            saleDashboard?.totalSale-->
+<!--              ? (saleDashboard?.totalSale | number : "" : "bn")-->
+<!--              : 0-->
+<!--            }}-->
+<!--          </h3>-->
+<!--        </div>-->
+<!--        <div class="card-activity">-->
+<!--          <h5 matTooltip="Today Sale">-->
+<!--            <mat-icon>show_chart</mat-icon>-->
+<!--            &lt;!&ndash;            {{0}}%&ndash;&gt;-->
+<!--          </h5>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+
+<div class="graph" *ngIf="USER_ROLE === 'super_admin' ">
+  <app-graph></app-graph>
+</div>

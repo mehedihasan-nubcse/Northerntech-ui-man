@@ -1,0 +1,189 @@
+<section class="add-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Sale Return</h4>
+    </div>
+  </div>
+</section>
+
+<section class="from-section">
+  <div class="area-border">
+<!--    <div class="grid">-->
+<!--      <div class="from form-1"-->
+<!--           *ngIf="!id"-->
+<!--      >-->
+<!--        <app-customer-search-field-->
+<!--          (onSelect)="onSelectCustomerList($event)"-->
+<!--        ></app-customer-search-field>-->
+<!--      </div>-->
+
+<!--      <div class="from">-->
+<!--        <mat-label>Invoice No</mat-label>-->
+<!--        <mat-form-field appearance="outline">-->
+<!--          <input [(ngModel)]="invoiceNo" matInput placeholder="Enter invoice no"/>-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+
+<!--      <div class="from">-->
+<!--        <mat-label>Return Date</mat-label>-->
+<!--        <mat-form-field appearance="outline" (click)="picker.open()">-->
+<!--          <input matInput [matDatepicker]="picker" placeholder="DD-MM-YYYY"-->
+<!--                 [ngModel]="soldDate" readonly [max]="today"/>-->
+<!--          <mat-datepicker-toggle-->
+<!--            matSuffix-->
+<!--            [for]="picker">-->
+<!--          </mat-datepicker-toggle>-->
+<!--          <mat-datepicker #picker></mat-datepicker>-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+<!--    </div>-->
+
+    <form
+      [style.display]="customer || customerInfo ? 'grid' : 'none'"
+      #formElement="ngForm"
+      [formGroup]="dataForm"
+      class="grid"
+      style="margin-bottom: 20px"
+    >
+      <div class="from">
+        <mat-label>Customer Name </mat-label>
+        <mat-form-field appearance="outline" class="form-field">
+          <input formControlName="name" matInput/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Customer Phone No *</mat-label>
+        <mat-form-field appearance="outline" class="form-field">
+          <input formControlName="phone" matInput type="text" />
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Customer Address</mat-label>
+        <mat-form-field appearance="outline" class="form-field">
+          <input formControlName="address" matInput/>
+          <mat-error>This field is required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-form-field appearance="outline" class="mat-date-input-field">
+          <mat-label>Birthdate(Own/Favourite Person)</mat-label>
+          <input matInput [matDatepicker]="picker2" formControlName="birthdate">
+          <mat-datepicker-toggle [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!--      <div class="disable-btn">-->
+      <!--        <button mat-button type="submit" style="background-color: #FE820E;">-->
+      <!--          Add New Customer-->
+      <!--        </button>-->
+      <!--      </div>-->
+    </form>
+
+    <app-product-search-filed
+      (onSelect)="onSelectProduct($event)">
+    </app-product-search-filed> <!-- END Product component -->
+
+    <div class="container" *ngIf="products.length>0">
+      <div class="table-responsive">
+        <table>
+          <thead>
+          <tr class="table-row">
+            <th>Product Name</th>
+            <th>Returning QTY</th>
+            <th>Sales Price($)</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of products; let i = index">
+            <td class="productimage">
+              <a class="product-text">{{data.name}}
+                ({{data?.sku ? data?.sku + ',' : ''}}{{data?.model ? data?.model + ',' : ''}}{{data?.others ? data?.others : ''}}
+                )
+              </a>
+            </td>
+            <td *ngIf="isViewMode">{{ data?.soldQuantity }}</td>
+            <td *ngIf="!isViewMode">
+              <div class="quantity">
+                <div>
+                  <button type="button" (click)="decrementQuantity(i)">
+                    <i class="fa fa-minus"></i>
+                  </button>
+                </div>
+                <div>
+                  <input [(ngModel)]="data.soldQuantity" type="text" value="{{ data?.soldQuantity }}"/>
+                </div>
+                <div>
+                  <button type="button" (click)="incrementQuantity(i, data)">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </td>
+            <td>{{ data?.salePrice }}</td>
+            <td>{{ data?.salePrice * data.soldQuantity }}</td>
+            <td>
+              <div class="delete-area">
+                <button
+                  [disabled]="isViewMode"
+                  mat-stroked-button
+                  color="warn"
+                  matTooltip="Delete"
+                  (click)="deleteProduct(i)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="table">
+      <table class="total-order">
+        <tr>
+          <td>Sub Total</td>
+          <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ subTotal | number:'':'bn' }}</td>
+        </tr>
+        <tr>
+          <td>Charge / Discount (-)</td>
+          <td class="number-color">
+            <input [readOnly]="isViewMode" [(ngModel)]="charge" digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true" class="td-input" type="number" placeholder="Enter amount">
+          </td>
+        </tr>
+
+        <tr>
+          <td class="total">Grand Total</td>
+          <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ grandTotal | number:'':'bn' }}</td>
+        </tr>
+      </table>
+    </div>
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Note</mat-label>
+      <textarea [(ngModel)]="note" matInput placeholder="Enter description" [rows]="3"></textarea>
+    </mat-form-field>
+
+    <div class="btn">
+      <button
+        *ngIf="!isViewMode"
+        mat-raised-button
+        type="button"
+        class="btn-submit"
+        (click)="onSubmit()">
+        Submit
+      </button>
+      <button
+        type="button"
+        routerLink="/sales/sale-return-list"
+        mat-raised-button
+        class="btn-submit color"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</section>

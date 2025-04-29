@@ -1,0 +1,698 @@
+<section class="page-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Buy Back List</h4>
+      <h6>Manage your buy backs</h6>
+    </div>
+    <div class="page-btn" style="display: flex; flex-direction: row; gap: 5px; height: 45px">
+<!--      <a style="background: #018e55;" routerLink="/sales/new-sales" class="btn btn-added"-->
+<!--      ><img src="/assets/images/svg/plus.svg" alt="img" class="me-1"/><span-->
+<!--      >POS</span-->
+<!--      ></a-->
+<!--      >-->
+
+      <a [routerLink]="['../', 'add-buy-back']" class="btn btn-added"
+      ><img src="/assets/images/svg/plus.svg" alt="img" class="me-1"/><span
+      >Add New BuyBack</span
+      ></a
+      >
+    </div>
+  </div>
+</section>
+
+<section class="table-section">
+  <div class="mat-elevation-z8">
+    <div class="table-top">
+      <div class="search-set">
+        <div (click)="onToggle()" class="filter-show">
+          <a class="btn btn-filter">
+            <span *ngIf="!toggleMenu" class="material-symbols-outlined"
+            >filter_alt</span
+            >
+            <a>
+              <a *ngIf="toggleMenu" class="close-button">
+                <span class="material-symbols-outlined">close</span>
+              </a>
+            </a>
+          </a>
+        </div>
+        <div class="search-input">
+          <a class="btn btn-searchset">
+            <mat-icon>search</mat-icon>
+          </a>
+          <form class="table-search" #searchForm="ngForm">
+            <input
+              type="search"
+              #searchInput
+              name="searchTerm"
+              autocomplete="off"
+              ngModel
+              placeholder="Search product name"
+            />
+          </form>
+        </div>
+      </div>
+
+      <div class="wordset">
+        <ul>
+<!--          <li style="margin-right: 5px;">-->
+<!--            <button-->
+<!--              mat-raised-button-->
+<!--              color="accent"-->
+<!--              matTooltip="Export as Excel"-->
+<!--              (click)="exportStockToAllExcel()"-->
+<!--            >-->
+<!--              <mat-icon>download</mat-icon>-->
+<!--              Stock Report in Excel-->
+<!--            </button>-->
+<!--          </li>-->
+          <li>
+            <!--            <button style="margin-bottom: 10px; margin-right: 10px;" mat-raised-button color="primary"-->
+            <!--                    ngxPrint-->
+            <!--                    styleSheetFile="src/theme/exports/table.scss"-->
+            <!--                    printSectionId="payment-type-list-print-table"-->
+            <!--            >-->
+            <!--              <mat-icon>print</mat-icon>-->
+            <!--              Print-->
+            <!--            </button>-->
+<!--            <button color="primary" style="margin-bottom: 10px; margin-right: 5px;"-->
+<!--                    (click)="openConfirmDialog('stock-report')" mat-raised-button matTooltip="Stock Report">-->
+<!--              <mat-icon>print</mat-icon>-->
+<!--              Stock Report-->
+
+<!--            </button>-->
+
+            <button color="primary" style="margin-bottom: 10px; margin-right: 5px;"
+                    (click)="openConfirmDialog('print')" mat-raised-button matTooltip="Print">
+              <mat-icon>print</mat-icon>
+            </button>
+            <!--            <button (click)="downloadTablePDF()">Download Table as PDF</button>-->
+          </li>
+          <li>
+            <button
+              mat-raised-button
+              color="accent"
+              matTooltip="Export as Excel"
+              (click)="exportToAllExcel()"
+            >
+              <mat-icon>download</mat-icon>
+              Download
+            </button>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+
+    <input
+      style="display: none"
+      #pickInput
+      type="file"
+      (change)="onFileChange($event)"
+      [accept]="'.xlsx, .xls, .csv'"
+    />
+    <!-- END File Picker -->
+
+    <div
+      class="container filter-area"
+      [class]="toggleMenu ? 'filter-show' : 'filter-hide'"
+    >
+      <div class="filler">
+        <div class="date-filter">
+          <mat-form-field
+            class="mat-date-input-field"
+            appearance="outline"
+            (click)="picker.open()"
+          >
+            <mat-label class="filter-date">Filter Date</mat-label>
+            <mat-date-range-input
+              [formGroup]="dataFormDateRange"
+              [rangePicker]="picker"
+              [max]="today"
+            >
+              <input
+                matStartDate
+                formControlName="start"
+                placeholder="Start date"
+                readonly
+              />
+              <input
+                matEndDate
+                formControlName="end"
+                placeholder="End date"
+                readonly
+                (dateChange)="endChangeRegDateRange($event)"
+              />
+            </mat-date-range-input>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+
+            <mat-error
+              *ngIf="
+              dataFormDateRange.controls.start.hasError('matStartDateInvalid')
+            "
+            >Invalid start date
+            </mat-error>
+            <mat-error
+              *ngIf="dataFormDateRange.controls.end.hasError('matEndDateInvalid')"
+            >Invalid end date
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <!--        <div class="sort">-->
+        <!--          <a-->
+        <!--            mat-raised-button-->
+        <!--            [matMenuTriggerFor]="menuCat"-->
+        <!--            class="button-style"-->
+        <!--          >-->
+        <!--            Category-->
+        <!--            <mat-icon>keyboard_arrow_down</mat-icon>-->
+        <!--          </a>-->
+        <!--          <mat-menu #menuCat="matMenu">-->
+        <!--            <a-->
+        <!--              *ngFor="let data of categories; let i = index"-->
+        <!--              mat-menu-item-->
+        <!--              (click)="filterData(data._id, i, 'category')"-->
+        <!--              [class.dropdown-active]="activeFilter1 === i"-->
+        <!--            >-->
+        <!--              {{ data.name }}-->
+        <!--            </a>-->
+        <!--          </mat-menu>-->
+        <!--        </div>-->
+
+
+<!--        <div class="sort">-->
+<!--          <button mat-raised-button [matMenuTriggerFor]="menuCategory" class="button-style">-->
+<!--            {{ categories[activeFilterCategory]?.name || 'Category' }}-->
+<!--            <mat-icon>keyboard_arrow_down</mat-icon>-->
+<!--          </button>-->
+<!--          <mat-menu #menuCategory="matMenu">-->
+<!--            <button-->
+<!--              *ngFor="let data of categories; let i = index"-->
+<!--              mat-menu-item-->
+<!--              (click)="onCategorySelect(data.name, i, data._id); filterData(data._id, i, 'category')"-->
+<!--              [class.dropdown-active]="activeFilterCategory === i"-->
+<!--            >-->
+<!--              {{ data?.name }}-->
+<!--            </button>-->
+<!--          </mat-menu>-->
+<!--        </div>-->
+
+        <!--        <div class="sort">-->
+        <!--          <button mat-raised-button [matMenuTriggerFor]="menuSubCategory" class="button-style">-->
+        <!--            {{subCategories[activeFilterSubCategory]?.name || 'Sub Category'}}-->
+        <!--            <mat-icon>keyboard_arrow_down</mat-icon>-->
+        <!--          </button>-->
+        <!--          <mat-menu #menuSubCategory="matMenu" >-->
+        <!--            <button-->
+        <!--              *ngFor="let data of subCategories; let i = index"-->
+        <!--              mat-menu-item-->
+        <!--              (click)="onSubCategorySelect(data.name, i);filterData(data._id, i, 'subCategory') "-->
+        <!--              [class.dropdown-active]="activeFilterSubCategory === i"-->
+        <!--            >-->
+        <!--              {{ data?.name }}-->
+        <!--            </button>-->
+        <!--          </mat-menu>-->
+        <!--        </div>-->
+
+        <!--        <div class="sort">-->
+        <!--          <button-->
+        <!--            mat-raised-button-->
+        <!--            [matMenuTriggerFor]="menuStatus"-->
+        <!--            class="button-style"-->
+        <!--          >-->
+        <!--            Status-->
+        <!--            <mat-icon>keyboard_arrow_down</mat-icon>-->
+        <!--          </button>-->
+        <!--          <mat-menu #menuStatus="matMenu">-->
+        <!--            <button-->
+        <!--              *ngFor="let data of dataBoolean; let i = index"-->
+        <!--              mat-menu-item-->
+        <!--              (click)="filterData(data.value, i, 'status')"-->
+        <!--              [class.dropdown-active]="activeFilter4 === i"-->
+        <!--            >-->
+        <!--              {{ data?.viewValue }}-->
+        <!--            </button>-->
+        <!--          </mat-menu>-->
+        <!--        </div>-->
+
+<!--        <div class="sort">-->
+<!--          <button-->
+<!--            mat-raised-button-->
+<!--            [matMenuTriggerFor]="menuVendor"-->
+<!--            class="button-style"-->
+<!--          >-->
+<!--            Supplier-->
+<!--            <mat-icon>keyboard_arrow_down</mat-icon>-->
+<!--          </button>-->
+<!--          <mat-menu #menuVendor="matMenu">-->
+<!--            <button-->
+<!--              *ngFor="let data of vendors; let i = index"-->
+<!--              mat-menu-item-->
+<!--              (click)="filterData(data._id, i, 'vendor')"-->
+<!--              [class.dropdown-active]="activeFilter4 === i"-->
+<!--            >-->
+<!--              {{ data?.name }}-->
+<!--              ({{ data?.phone }})-->
+<!--            </button>-->
+<!--          </mat-menu>-->
+<!--        </div>-->
+        <!--        <div class="sort">-->
+        <!--          <button-->
+        <!--            mat-raised-button-->
+        <!--            [matMenuTriggerFor]="menuSort"-->
+        <!--            class="button-style"-->
+        <!--          >-->
+        <!--            Sort By-->
+        <!--            <mat-icon>keyboard_arrow_down</mat-icon>-->
+        <!--          </button>-->
+        <!--          <mat-menu #menuSort="matMenu">-->
+
+        <!--            <button-->
+        <!--              (click)="sortData({ salePrice: 1 }, 3)"-->
+        <!--              mat-menu-item-->
+        <!--              [class.dropdown-active]="activeSort === 3"-->
+        <!--            >-->
+        <!--              Sale Price (Low ~ High)-->
+        <!--            </button>-->
+        <!--            <button-->
+        <!--              (click)="sortData({ salePrice: -1 }, 4)"-->
+        <!--              mat-menu-item-->
+        <!--              [class.dropdown-active]="activeSort === 4"-->
+        <!--            >-->
+        <!--              Sale Price (High ~ Low)-->
+        <!--            </button>-->
+        <!--            <button-->
+        <!--              (click)="sortData({ quantity: 1 }, 5)"-->
+        <!--              mat-menu-item-->
+        <!--              [class.dropdown-active]="activeSort === 5"-->
+        <!--            >-->
+        <!--              Quantity (Low ~ High)-->
+        <!--            </button>-->
+        <!--            <button-->
+        <!--              (click)="sortData({ quantity: -1 }, 6)"-->
+        <!--              mat-menu-item-->
+        <!--              [class.dropdown-active]="activeSort === 6"-->
+        <!--            >-->
+        <!--              Quantity (High ~ Low)-->
+        <!--            </button>-->
+        <!--          </mat-menu>-->
+        <!--        </div>-->
+      </div>
+
+      <div
+        class="left"
+        style="margin-bottom: 10px"
+        *ngIf="filter || activeSort"
+      >
+        <button mat-stroked-button (click)="onRemoveAllQuery()">
+          <mat-icon>close</mat-icon>
+          Clear FilterData
+        </button>
+      </div>
+    </div>
+
+    <div class="button-area" *ngIf="selectedIds && selectedIds.length">
+      <div class="delete-area">
+        <button
+          *ngIf="checkDeletePermission"
+          mat-stroked-button
+          color="warn"
+          (click)="openConfirmDialog('delete')"
+          matTooltip="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <!-- END Delete Action -->
+
+    <app-no-content
+      *ngIf="!isLoading && !buyBacks.length"
+      [matIcon]="'info'"
+      title="No data Found!"
+    ></app-no-content>
+
+    <div class="container">
+      <div class="table-responsive">
+        <table *ngIf="buyBacks.length">
+          <tr class="table-row">
+            <th class="t-checkbox">
+              <mat-checkbox
+                #matCheckbox
+                (change)="onAllSelectChange($event)"
+                class="mat-check"
+              ></mat-checkbox>
+            </th>
+            <th>Name</th>
+            <th>Customer Name</th>
+            <th>Person Name</th>
+<!--            <th>Item</th>-->
+            <!--            <th>Sub Item</th>-->
+            <!--            <th>Attribute</th>-->
+            <!--            <th>Code</th>-->
+            <th>Color</th>
+            <th>Storage/Others</th>
+            <th>IMEI</th>
+            <th>Purchase Price</th>
+            <th>Date/Time</th>
+            <th></th>
+<!--            <th>Sale Price</th>-->
+<!--            <th>Qty</th>-->
+            <!--            <th>T P.P</th>-->
+<!--            <th>Total Amount</th>-->
+            <!--            <th>Status</th>-->
+            <th>Action</th>
+          </tr>
+          <tr
+            *ngFor="
+              let data of buyBacks
+                | paginate
+                  : {
+                      itemsPerPage: buyBacksPerPage,
+                      currentPage: currentPage,
+                      totalItems: totalBuyBacks
+                    };
+              let i = index
+            "
+            class="table-hover"
+            [ngClass]="{ 'row-selected': data.select }"
+          >
+            <td class="t-checkbox">
+              <mat-checkbox
+                class="t-mat-checkbox"
+                [(ngModel)]="data.select"
+                (ngModelChange)="onCheckChange($event, i, data._id)"
+              ></mat-checkbox>
+            </td>
+            <td>{{ data?.name || "-" }}-{{data?.colors?.name}}-{{data?.sizes?.name}}</td>
+              <td>{{ data?.customerName || "-" }}</td>
+              <td>{{ data?.personName || "-" }}</td>
+<!--            <td>{{ data?.category?.name || "-" }}</td>-->
+            <!--            <td>{{ data?.subcategory?.name || "-" }}</td>-->
+            <!--            <td>{{ data?.attribute?.name || "-" }}</td>-->
+            <!--            <td>{{ data?.sku  || "-" }}</td>-->
+            <td>{{ data?.colors?.name || "-" }}</td>
+            <td>{{ data?.sizes?.name || "-" }}</td>
+            <td>{{ data?.imei || "-" }}</td>
+
+            <td>{{ shopInformation?.currency | currencyIcon }} {{ data?.purchasePrice | number : "" : "bn" || "-" }}</td>
+            <td>({{ data?.createdAtString | date}})-({{data?.createTime}})</td>
+            <td></td>
+<!--            <td>{{ shopInformation?.currency | currencyIcon }} {{ data?.salePrice | number : "" : "bn" || "-" }}</td>-->
+<!--            <td>{{ data?.quantity || "0" }}</td>-->
+            <!--            <td>-->
+            <!--              {{ shopInformation?.currency | currencyIcon }}-->
+            <!--              {{-->
+            <!--                data?.purchasePrice * data?.quantity | number : "" : "bn" || "-"-->
+            <!--              }}-->
+            <!--            </td>-->
+<!--            <td>-->
+<!--              {{ shopInformation?.currency | currencyIcon }}-->
+<!--              {{ data?.purchasePrice * data?.quantity | number : "" : "bn" || "-" }}-->
+<!--            </td>-->
+            <!--            <td [style.color]="data.status ? 'green' : 'red'">{{(data?.status ? "Active" : "Draft") | titlecase}}</td>-->
+            <td class="button">
+              <button color="primary" (click)="openConfirmDialog1('print1', data)" mat-mini-fab matTooltip="Print pos invoice">
+                <mat-icon class="material-symbols-outlined">print</mat-icon>
+              </button>
+              <button
+                *ngIf="checkEditPermission"
+                mat-mini-fab
+                color="warn"
+                [routerLink]="['../edit-buy-back/', data._id]">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button color="primary" (click)="openConfirmDialog1('printForView', data)" mat-mini-fab matTooltip="Print A4 invoice">
+                <mat-icon class="material-symbols-outlined">visibility</mat-icon>
+              </button>
+            </td>
+<!--            <td class="button">-->
+<!--              <button mat-mini-fab [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">-->
+<!--                <mat-icon>more_vert</mat-icon>-->
+<!--              </button>-->
+
+<!--              <mat-menu #menu="matMenu">-->
+<!--                <a mat-menu-item [routerLink]="['../edit-buy-back/', data._id]">-->
+<!--                  <mat-icon>edit</mat-icon>-->
+<!--                  <span>Edit</span>-->
+<!--                </a>-->
+<!--&lt;!&ndash;                <button mat-menu-item [routerLink]="['../barcode-generate/', data._id]">&ndash;&gt;-->
+<!--&lt;!&ndash;                  <mat-icon>qr_code_2</mat-icon>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <span>Qr Code</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                </button>&ndash;&gt;-->
+<!--&lt;!&ndash;                <button mat-menu-item (click)="openDamageControlDialog(data)">&ndash;&gt;-->
+<!--&lt;!&ndash;                  <mat-icon>sync_alt</mat-icon>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <span>Out Stock / In Stock / Return</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                </button>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                <button mat-menu-item [routerLink]="['/inventory/transfer-history', data._id]">&ndash;&gt;-->
+<!--&lt;!&ndash;                  <mat-icon>history</mat-icon>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <span>Out Stock History</span>&ndash;&gt;-->
+<!--&lt;!&ndash;                </button>&ndash;&gt;-->
+<!--              </mat-menu>-->
+<!--            </td>-->
+            <!--            <td class="button">-->
+            <!--              <button-->
+            <!--                matTooltip="Edit"-->
+            <!--                mat-mini-fab-->
+            <!--                color="accent"-->
+            <!--                [routerLink]="['../edit-buyBack/', data._id]"-->
+            <!--              >-->
+            <!--                <mat-icon>edit</mat-icon>-->
+            <!--              </button>-->
+            <!--              <button-->
+            <!--                matTooltip="Barcode"-->
+            <!--                mat-mini-fab-->
+            <!--                color="primary"-->
+            <!--                [routerLink]="['../barcode-generate/', data._id]"-->
+            <!--              >-->
+            <!--                <mat-icon>qr_code_2</mat-icon>-->
+            <!--              </button>-->
+            <!--              <button-->
+            <!--                style="background: blueviolet"-->
+            <!--                (click)="openDamageControlDialog(data)"-->
+            <!--                matTooltip="Out Stock"-->
+            <!--                mat-mini-fab>-->
+            <!--                <mat-icon>sync_alt</mat-icon>-->
+            <!--              </button>-->
+            <!--            </td>-->
+          </tr>
+          <!-- END Main Data -->
+
+          <tr class="table-hover" style="background: #fff5ea" *ngIf="buyBacks.length">
+            <!--            <td></td>-->
+            <td></td>
+            <td style="font-weight: bold">Total({{ shopInformation?.currency | currencyIcon }})</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <!--            <td></td>-->
+<!--            <td></td>-->
+<!--            <td></td>-->
+            <!--            <td></td>-->
+            <!--            <td></td>-->
+<!--            <td style="font-weight: bold">-->
+<!--              {{ buyBackCalculation?.totalQuantity | number : "" : "bn" }}-->
+<!--            </td>-->
+            <td></td>
+            <td></td>
+
+            <td style="font-weight: bold">
+
+              {{ shopInformation?.currency | currencyIcon }} {{ getTotalPurchasePrice() | number : "" : "bn" }}
+            </td>
+            <td></td>
+<!--            <td style="font-weight: bold">-->
+<!--              {{ buyBackCalculation?.totalSalePrice | number : "" : "bn" }}-->
+<!--            </td>-->
+            <td></td>
+            <td></td>
+            <!--            <td></td>-->
+          </tr>
+        </table>
+      </div>
+    </div>
+    <!-- END Main Table -->
+
+    <div class="prginator-area" *ngIf="!isLoading && buyBacks.length">
+      <div class="dataTables_length" id="DataTables_Table_0_length">
+        <label>
+          <span>Show per page:</span>
+          <select
+            class="custom-select"
+            (change)="onSelectShowPerPage(val.value)"
+            #val
+          >
+            <option *ngFor="let data of showPerPageList">
+              {{ data.num }}
+            </option>
+          </select>
+        </label>
+      </div>
+      <!-- END PAGINATION -->
+
+      <div class="count-area">
+        <div class="pagination-container">
+          <pagination-controls
+            class="data-pagination"
+            [autoHide]="true"
+            [maxSize]="15"
+            (pageChange)="onPageChanged($event)"
+          >
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-border"></div>
+
+  </div>
+</section>
+
+
+<!-- TEMPLATE NGX SPINNER-->
+<ngx-spinner bdColor="rgba(0,0,0,0.3)" size="medium" color="#fff" type="ball-scale-pulse" [fullScreen]="true">
+  <p style="color: white"> Loading... </p>
+</ngx-spinner>
+
+
+<app-table-print *ngIf="isReport" [products]="buyBacks2" [shopInformation]="shopInformation" [buyBackCalculation]="buyBackCalculation"
+                 style="visibility: hidden" id="section-pos-print"></app-table-print>
+
+
+<!-- Print Area -->
+<app-print-sale-pos *ngIf="isStockReport" style="visibility: hidden" id="section-pos-print" [data]="expanseData" [shopInformation]="shopInformation"></app-print-sale-pos>
+<app-view-print-sale-pos *ngIf="isStockReportForView" style="visibility: hidden" id="section-pos-print" [data]="expanseData" [shopInformation]="shopInformation"></app-view-print-sale-pos>
+
+<!--<div class="my-table" style="display: none" id="payment-type-list-print-table">-->
+<!--  <table style="-->
+<!--    font-family: arial, sans-serif;-->
+<!--    border-collapse: collapse;-->
+<!--    width: 100%;-->
+<!--    margin-bottom: 20px;-->
+<!--    font-size: 12px;"-->
+<!--  >-->
+<!--    <tr>-->
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">Name</th>-->
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">Item</th>-->
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">Sub Item</th>-->
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">Color</th>-->
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">Purchase Price</th>-->
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">Sales Price</th>-->
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">Qty</th>-->
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">T P.P</th>-->
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">Total Amount</th>-->
+<!--    </tr>-->
+
+
+<!--    <tr *ngFor="let data of buyBacks">-->
+<!--      <td style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">-->
+<!--        {{ data?.name }}-->
+<!--      </td>-->
+
+<!--      <td style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">-->
+<!--        {{  data?.category?.name || "-" }}-->
+<!--      </td>-->
+
+<!--      <td style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">-->
+<!--        {{  data?.subcategory?.name || "-" }}-->
+<!--      </td>-->
+
+<!--      <td style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">-->
+<!--        {{  data?.colors?.name || "-" }}-->
+<!--      </td>-->
+
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">-->
+<!--        {{ data?.purchasePrice | number : "" : "bn" || "-" }}-->
+<!--      </td>-->
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">-->
+<!--        {{ data?.salePrice | number : "" : "bn" || "-" }}-->
+<!--      </td>-->
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">-->
+<!--        {{ data?.quantity || "0" }}-->
+<!--      </td>-->
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">-->
+<!--        {{data?.purchasePrice * data?.quantity | number : "" : "bn" || "-"}}-->
+<!--      </td>-->
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: left;-->
+<!--    padding: 5px;-->
+<!--    font-size: 12px;">-->
+<!--        {{ data?.salePrice * data?.quantity | number : "" : "bn" || "-" }}-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--  </table>-->
+<!--</div>-->

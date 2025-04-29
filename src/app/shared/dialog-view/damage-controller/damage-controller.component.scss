@@ -1,0 +1,18 @@
+@import "src/theme/common/task-controller-dialog";
+.payment-btn{
+  button{
+    //background: none;
+    padding: 10px;
+    border: none;
+    background: #0f89d3;
+    color: white;
+    margin: 10px;
+    cursor: pointer;
+  }
+}
+
+.payment-btn{
+  button.active {
+    background: #2da44e;
+  }
+}

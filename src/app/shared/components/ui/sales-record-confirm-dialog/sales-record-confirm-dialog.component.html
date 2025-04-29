@@ -1,0 +1,83 @@
+<div class="dialog-container">
+
+  <div class="confirm-dialog-area">
+    <form #formElement="ngForm" [formGroup]="dataForm" (ngSubmit)="onSubmit()" autocomplete="off">
+    <div class="info">
+      <h1>{{data?.title}}</h1>
+      <p>{{data?.message}}</p>
+    </div>
+
+
+    <mat-card class="content-main content-2" >
+      <div class="title">
+        <h4>Add Payout</h4>
+      </div>
+
+      <!--        <div style="margin-top: 15px;" class="group-link">-->
+      <!--          <mat-form-field appearance="outline" class="w-100 ">-->
+      <!--            <mat-label>Group Link</mat-label>-->
+      <!--            <input formControlName="groupLink" matInput placeholder="Enter group link">-->
+      <!--            <mat-error>This field is required</mat-error>-->
+      <!--          </mat-form-field>-->
+      <!--        </div>-->
+
+      <div formArrayName="payoutAmount" class="form-array-input">
+        <div class="single-field"
+             *ngFor="let data of payoutDataArray?.controls; let i = index"
+             [formGroupName]="i">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Name</mat-label>
+            <input formControlName="name"
+                   type="text"
+                   matInput [placeholder]="'Enter Name'">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Amount</mat-label>
+            <input formControlName="value"
+                   type="number"
+                   matInput [placeholder]="'Enter amount'">
+          </mat-form-field>
+
+          <button class="btn-form-field-remove" type="button" mat-mini-fab color="warn"
+                  (click)="removeFormArrayField('payoutAmount', i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+
+
+      </div>
+      <div class="add-form-array-action">
+        <button type="button" mat-raised-button color="primary"
+                (click)="onAddNewPayoutAmount('payoutAmount')">
+          <mat-icon>add</mat-icon>
+          Add new payout
+        </button>
+      </div>
+
+    </mat-card>
+
+
+    <div class="actions-around">
+      <button
+        (click)="onDismiss()"
+        class="btn-round"
+        mat-raised-button
+        color="warn"
+        type="button">
+        Cancel
+      </button>
+
+      <button
+        (click)="onConfirm()"
+        class="btn-round"
+        mat-raised-button
+        color="primary"
+        type="submit">
+        Confirm
+      </button>
+    </div>
+    </form>
+  </div>
+</div>

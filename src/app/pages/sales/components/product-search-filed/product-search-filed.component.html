@@ -1,0 +1,47 @@
+<div class="input-groupicon" appOutSideClick
+     (outsideClick)="handleOutsideClick()">
+  <mat-label>Product Name</mat-label>
+<!--  (window:keypress)="onKey($event)"-->
+  <div class="search-area" (click)="onClickSearchArea($event)">
+    <form #searchForm="ngForm" class="from" style="width: 100%">
+      <mat-form-field appearance="outline" class="form-field">
+        <input
+          id="product-search-input"
+          (keydown.enter)="onKey($event)"
+          ngModel
+          type="text"
+          #searchInput
+          name="searchTerm"
+          matInput
+          (focus)="handleFocus($event)"
+          placeholder="Search with product name, code, model..."
+        />
+      </mat-form-field>
+    </form>
+    <!---suggesstion-area-->
+    <div
+      class="suggesstion-area"
+      [class]="searchProducts.length && isOpen ? 'active' : 'inactive'"
+    >
+      <ul
+        *ngFor="let data of searchProducts"
+        (click)="onSelectItem(data)"
+      >
+
+        <li>
+          <div class="suggesstion-left">
+            <div class="sug-product-name">
+              <h4>{{utilsService.getProductName(data)}} <span *ngIf="data?.batchNumber"> ({{data?.batchNumber}})</span> <span [class.quantity]="data?.quantity ===0"> -  Qty: ({{data?.quantity}}) - </span> <span  *ngIf="data?.imei">IMEI: {{data?.imei}} - </span> <span>Category: {{data?.category?.name}}</span> </h4>
+
+<!--           <h4></h4>-->
+            </div>
+          </div>
+          <div class="sug-product-price">
+            <span>{{shopInformation?.currency | currencyIcon}} {{data.salePrice | number : '' : 'bn'}}</span>
+          </div>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</div>

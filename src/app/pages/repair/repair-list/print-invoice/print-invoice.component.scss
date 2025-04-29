@@ -1,0 +1,163 @@
+.invoice {
+  width: 82mm;
+  max-width: 82mm;
+  //width: 100%;
+  padding: 0 10px 0 10px;
+  //border: 1px solid #cccccc;
+  margin: 0 auto;
+
+
+  .note{
+    border: 1px solid #000000;
+    padding: 5px;
+    margin: 10px;
+    border-radius: 15px;
+    text-align: center;
+    p{
+      margin-bottom: 0;
+      text-align: center;
+    }
+  }
+.header {
+  text-align: center;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 14px;
+  line-height: 15px;
+}
+
+.header p {
+  margin: 4px 0;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+/* Table styles */
+.report-table table {
+  border-collapse: collapse;
+  width: 100%;
+  //max-width: 80mm;
+  margin: auto;
+  font-size: 8px;
+}
+
+.report-table td {
+  border: 0.1px solid #787878 !important;
+  padding: 2px 3px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 9px;
+}
+
+.report-table .label {
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 13px;
+  text-wrap: nowrap;
+  width: 30%;
+}
+
+.report-table .dots {
+  display: flex;
+  justify-content: space-around;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+/* Footer styles */
+footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.signature {
+  text-align: center;
+  height: 60px;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  p{
+    font-size: 10px;
+  }
+}
+
+.contact {
+  height: 60px;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  p{
+    font-size: 10px;
+  }
+}
+.content-text{
+  font-size: 9px;
+}
+.signature .line {
+  margin: 5px auto;
+  width: 80%;
+  border-bottom: 1px solid #000;
+}
+
+.qr-code {
+  margin-bottom: -7px;
+  display: flex;
+  justify-content: center;
+}
+.terms{
+  h3{
+    margin-bottom: 0;
+    margin-top: 10px!important;
+    font-size: 11px!important;
+  }
+  p{
+    margin-bottom: 3px!important;
+    font-weight: 500;
+    font-size: 10px!important;
+    line-height: 13px!important;
+  }
+}
+}
+/* Print styles */
+@media print {
+  .invoice {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+  }
+
+  @page  {
+    margin: 8px;
+  }
+
+  //.header h1 {
+  //  font-size: 16px;
+  //}
+  //
+  //.header p {
+  //  font-size: 10px;
+  //}
+  //
+  //.report-table td {
+  //  font-size: 12px;
+  //}
+
+  //footer {
+  //  display: block;
+  //  font-size: 10px;
+  //}
+  //
+  //.signature, .contact {
+  //  text-align: center;
+  //}
+  //
+  //.qr-code {
+  //  background: none;
+  //  width: 50px;
+  //  height: 50px;
+  //}
+}

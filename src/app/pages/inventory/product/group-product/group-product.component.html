@@ -1,0 +1,288 @@
+<section class="page-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Similar Product List</h4>
+      <h6>Manage your products</h6>
+    </div>
+<!--    <div class="page-btn" style="display: flex; flex-direction: row; gap: 5px; height: 45px">-->
+<!--      <a style="background: #018e55;" routerLink="/sales/new-sales" class="btn btn-added"-->
+<!--      ><img src="/assets/images/svg/plus.svg" alt="img" class="me-1"/><span-->
+<!--      >POS</span-->
+<!--      ></a-->
+<!--      >-->
+
+<!--      <a [routerLink]="['../../', 'add-product']" class="btn btn-added"-->
+<!--      ><img src="/assets/images/svg/plus.svg" alt="img" class="me-1"/><span-->
+<!--      >Add New Product</span-->
+<!--      ></a-->
+<!--      >-->
+<!--    </div>-->
+  </div>
+</section>
+
+<section class="table-section">
+  <div class="mat-elevation-z8">
+    <div class="table-top">
+      <div class="search-set">
+<!--        <div (click)="onToggle()" class="filter-show">-->
+<!--          <a class="btn btn-filter">-->
+<!--            <span *ngIf="!toggleMenu" class="material-symbols-outlined"-->
+<!--            >filter_alt</span-->
+<!--            >-->
+<!--            <a>-->
+<!--              <a *ngIf="toggleMenu" class="close-button">-->
+<!--                <span class="material-symbols-outlined">close</span>-->
+<!--              </a>-->
+<!--            </a>-->
+<!--          </a>-->
+<!--        </div>-->
+        <div class="search-input">
+          <a class="btn btn-searchset">
+            <mat-icon>search</mat-icon>
+          </a>
+          <form class="table-search" #searchForm="ngForm">
+            <input
+              type="search"
+              #searchInput
+              name="searchTerm"
+              autocomplete="off"
+              ngModel
+              placeholder="Search..."
+            />
+          </form>
+        </div>
+
+
+      </div>
+
+      <div class="wordset">
+        <ul>
+          <li style="margin-right: 5px;">
+            <button
+              mat-raised-button
+              color="accent"
+              matTooltip="Export as Excel"
+              (click)="exportStockToAllExcel()"
+            >
+              <mat-icon>download</mat-icon>
+              Stock Report in Excel
+            </button>
+          </li>
+          <li>
+            <button color="primary" style="margin-bottom: 10px; margin-right: 5px;"
+                    (click)="openConfirmDialog('stock-report')" mat-raised-button matTooltip="Stock Report in Pdf">
+              <mat-icon>print</mat-icon>
+              Stock Report in Pdf
+
+            </button>
+
+            <button color="primary" style="margin-bottom: 10px; margin-right: 5px;"
+                    (click)="openConfirmDialog('print')" mat-raised-button matTooltip="Stock List">
+              <mat-icon>print</mat-icon>
+              Stock List
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <input
+      style="display: none"
+      #pickInput
+      type="file"
+      (change)="onFileChange($event)"
+      [accept]="'.xlsx, .xls, .csv'"
+    />
+    <!-- END File Picker -->
+
+    <!--          *ngIf="checkDeletePermission"-->
+    <div class="button-area" *ngIf="selectedIds && selectedIds.length">
+      <div class="delete-area">
+        <button
+
+          mat-stroked-button
+          color="warn"
+          (click)="openConfirmDialog('delete')"
+          matTooltip="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <!-- END Delete Action -->
+
+    <app-no-content
+      *ngIf="!isLoading && !products.length"
+      [matIcon]="'info'"
+      title="No data Found!"
+    ></app-no-content>
+
+    <div class="container">
+      <div class="table-responsive">
+        <table *ngIf="products.length">
+          <tr class="table-row">
+            <th class="t-checkbox">
+              <mat-checkbox
+                #matCheckbox
+                (change)="onAllSelectChange($event)"
+                class="mat-check"
+              ></mat-checkbox>
+            </th>
+            <th>Name</th>
+            <th>Item</th>
+            <th>Supplier</th>
+            <th>Entry Person</th>
+            <th>Date/Time</th>
+            <th>Color</th>
+            <th>Storage/Others</th>
+            <th>IMEI</th>
+            <th>SKU</th>
+            <th>Purchase Price</th>
+            <th>Sale Price</th>
+            <th>Qty</th>
+            <!--            <th>T P.P</th>-->
+            <th>Total Amount</th>
+            <!--            <th>Status</th>-->
+            <th>Action</th>
+          </tr>
+          <tr
+            *ngFor="
+              let data of products;
+              let i = index
+            "
+            class="table-hover"
+            [ngClass]="{ 'row-selected': data.select }"
+          >
+            <td class="t-checkbox">
+              <mat-checkbox
+                class="t-mat-checkbox"
+                [(ngModel)]="data.select"
+                (ngModelChange)="onCheckChange($event, i, data._id)"
+              ></mat-checkbox>
+            </td>
+            <td>{{ data?.name || "-" }} <span *ngIf="data?.batchNumber">({{data?.batchNumber ?? data?.batchNumber}})</span></td>
+            <!--            <td>{{ data?.salesman || "-" }}</td>-->
+            <td>{{ data?.category?.name || "-" }}</td>
+            <td>{{ data?.vendor?.name || "-" }}</td>
+            <td>{{ data?.salesman || "-" }}</td>
+            <td>({{ (data?.createdAtString | date ) || "-" }}) - ({{ (data?.createTime ) || "-" }})</td>
+            <td>{{ data?.colors?.name || "-" }}</td>
+            <td>{{ data?.sizes?.name || "-" }}</td>
+            <td>{{ data?.imei || "-" }}</td>
+            <td>{{ data?.sku || "-" }}</td>
+            <td>{{ shopInformation?.currency | currencyIcon }} {{ data?.purchasePrice | number : "" : "bn" || "-" }}</td>
+            <td>{{ shopInformation?.currency | currencyIcon }} {{ data?.salePrice | number : "" : "bn" || "-" }}</td>
+            <td>{{ data?.quantity || "0" }}</td>
+
+            <td>
+              {{ shopInformation?.currency | currencyIcon }}
+              {{ data?.salePrice * data?.quantity | number : "" : "bn" || "-" }}
+            </td>
+            <!--            <td [style.color]="data.status ? 'green' : 'red'">{{(data?.status ? "Active" : "Draft") | titlecase}}</td>-->
+            <td class="button">
+              <button mat-mini-fab [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+
+              <mat-menu #menu="matMenu">
+                <a mat-menu-item [routerLink]="['../../edit-product/', data._id]">
+                  <mat-icon>edit</mat-icon>
+                  <span>Edit</span>
+                </a>
+                <button mat-menu-item [routerLink]="['../../barcode-generate/', data._id]">
+                  <mat-icon>qr_code_2</mat-icon>
+                  <span>Qr Code</span>
+                </button>
+                <button mat-menu-item (click)="openDamageControlDialog(data)">
+                  <mat-icon>sync_alt</mat-icon>
+                  <!--                  <span>Out Stock / In Stock / Return</span>-->
+                  <span>Out Stock</span>
+                </button>
+
+              </mat-menu>
+            </td>
+          </tr>
+          <!-- END Main Data -->
+
+          <tr class="table-hover" style="background: #fff5ea" *ngIf="products.length">
+            <!--            <td></td>-->
+            <td></td>
+            <td style="font-weight: bold">Total({{ shopInformation?.currency | currencyIcon }})</td>
+            <td></td>
+            <td></td>
+            <!--            <td></td>-->
+            <td></td>
+            <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+            <td style="font-weight: bold">
+
+              {{ shopInformation?.currency | currencyIcon }} {{ productCalculation?.sumPurchasePrice | number : "" : "bn" }}
+            </td>
+            <td style="font-weight: bold">
+              {{ shopInformation?.currency | currencyIcon }} {{ productCalculation?.sumSalePrice | number : "" : "bn" }}
+            </td>
+            <td style="font-weight: bold">
+              {{ productCalculation?.totalQuantity | number : "" : "bn" }}
+            </td>
+
+
+            <td>{{ shopInformation?.currency | currencyIcon }} {{ productCalculation?.totalSalePrice | number : "" : "bn" }}</td>
+            <td></td>
+            <!--            <td></td>-->
+          </tr>
+        </table>
+      </div>
+    </div>
+    <!-- END Main Table -->
+
+    <div class="prginator-area" *ngIf="!isLoading && products.length">
+      <div class="dataTables_length" id="DataTables_Table_0_length">
+        <label>
+          <span>Show per page:</span>
+          <select
+            class="custom-select"
+            (change)="onSelectShowPerPage(val.value)"
+            #val
+          >
+            <option *ngFor="let data of showPerPageList">
+              {{ data.num }}
+            </option>
+          </select>
+        </label>
+      </div>
+      <!-- END PAGINATION -->
+
+      <div class="count-area">
+        <div class="pagination-container">
+          <pagination-controls
+            class="data-pagination"
+            [autoHide]="true"
+            [maxSize]="15"
+            (pageChange)="onPageChanged($event)"
+          >
+          </pagination-controls>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-border"></div>
+
+  </div>
+</section>
+
+
+<!-- TEMPLATE NGX SPINNER-->
+<ngx-spinner bdColor="rgba(0,0,0,0.3)" size="medium" color="#fff" type="ball-scale-pulse" [fullScreen]="true">
+  <p style="color: white"> Loading... </p>
+</ngx-spinner>
+
+
+<app-table-print *ngIf="isReport" [products]="products2" [productCalculation]="productCalculation"
+                 style="visibility: hidden" id="section-pos-print" [shopInformation] = shopInformation></app-table-print>
+
+<app-stock-report *ngIf="isStockReport" [products]="filterProducts3" [productCalculation]="productCalculation" [shopInformation] = shopInformation
+                  style="visibility: hidden" id="section-pos-print1"></app-stock-report>
+

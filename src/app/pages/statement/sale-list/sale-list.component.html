@@ -1,0 +1,204 @@
+<section class="page-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Sales Statement</h4>
+      <h6>Manage your sales statement</h6>
+    </div>
+  </div>
+</section> <!-- END Header Area -->
+
+
+<section class="table-section" id="sale-list-table-view">
+  <div class="mat-elevation-z8">
+    <div class="table-top">
+      <div class="date-filter">
+        <mat-form-field
+          class="mat-date-input-field"
+          appearance="outline"
+          (click)="picker.open()"
+        >
+          <mat-label class="filter-date">Filter Date</mat-label>
+          <mat-date-range-input
+            [formGroup]="dataFormDateRange"
+            [rangePicker]="picker"
+            [max]="today"
+          >
+            <input
+              matStartDate
+              formControlName="start"
+              placeholder="Start date"
+              readonly
+            />
+            <input
+              matEndDate
+              formControlName="end"
+              placeholder="End date"
+              readonly
+              (dateChange)="endChangeRegDateRange($event)"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+
+          <mat-error
+            *ngIf="
+              dataFormDateRange.controls.start.hasError('matStartDateInvalid')
+            "
+          >Invalid start date
+          </mat-error>
+          <mat-error
+            *ngIf="dataFormDateRange.controls.end.hasError('matEndDateInvalid')"
+          >Invalid end date
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="sort">
+        <button mat-raised-button [matMenuTriggerFor]="menuMonth" class="button-style">
+          {{months[activeFilterMonth]?.viewValue || 'Month'}}
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+        <mat-menu #menuMonth="matMenu">
+          <button
+            *ngFor="let data of months; let i = index"
+            mat-menu-item
+            (click)="filterData(data.value, i, 'month')"
+            [class.dropdown-active]="activeFilterMonth === i"
+          >
+            {{ data?.viewValue }}
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="sort">
+        <button mat-raised-button class="button-style" (click)="exportToAllExcel()">
+          Export as Excel
+          <mat-icon>file_download</mat-icon>
+        </button>
+      </div>
+
+    </div> <!-- END Table Top -->
+
+<!--    <div class="total-calc">-->
+<!--      <div class="card-border">-->
+<!--        <h2>Total Amount: {{calculation?.grandTotal ?? 0 | number: '' : 'bn'}}</h2>-->
+<!--      </div>-->
+<!--    </div>-->
+
+    <div
+      class="container filter-area">
+      <div
+        class="left"
+        style="margin-bottom: 10px"
+        *ngIf="!isDefaultFilter && (filter || activeSort)"
+      >
+        <div>
+          <button mat-stroked-button (click)="onRemoveAllQuery()">
+            <mat-icon>close</mat-icon>
+            Clear FilterData
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-area" *ngIf="selectedIds && selectedIds.length">
+      <div class="delete-area">
+        <button
+          *ngIf="checkDeletePermission"
+          mat-stroked-button
+          color="warn"
+          (click)="openConfirmDialog('delete')"
+          matTooltip="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <app-no-content
+      *ngIf="!isLoading && !sales.length"
+      [matIcon]="'info'"
+      title="No data Found!"
+    ></app-no-content>
+
+    <div *ngFor="let data1 of sales; let i = index">
+      <div class="header">
+        <h2>{{ data1?._id | date }}</h2>
+      </div>
+      <div class="container">
+        <div class="table-responsive">
+          <table *ngIf="sales.length" [id]="'statement-sale-list'+ i">
+            <thead>
+            <tr class="table-row">
+              <th>Product Name</th>
+              <th>Purchase Price</th>
+              <th>Quantity</th>
+              <th>Sale Price</th>
+              <th>TP. Price</th>
+              <th>TS. Price</th>
+              <th>Av. Discount</th>
+              <th>Profit/Loss</th>
+              <th>Percent(%)</th>
+            </tr>
+            </thead>
+            <tr *ngFor="let data of data1.data; let j = index" class="table-hover">
+              <td>{{ data?.productName }}</td>
+              <td>{{ data?.purchasePrice }}</td>
+              <td>{{ data?.soldQuantity }}</td>
+              <td>{{ data?.salePrice | number:'2.2-2'}}</td>
+              <td>{{ data?.purchasePrice *  data?.soldQuantity | number:'2.2-2'}}</td>
+              <td>{{ data?.salePrice *  data?.soldQuantity | number:'2.2-2'}}</td>
+              <td>{{ (data?.discount) | number:'2.2-2'}}</td>
+              <td>{{ ((data?.salePrice * data?.soldQuantity) - (data?.purchasePrice * data?.soldQuantity) - data?.discount) | number:'2.2-2'}}</td>
+
+              <td>{{ getPercent(data)}}</td>
+            </tr>
+            <tr class="table-hover" style="background: #fff5ea">
+              <td style="font-weight: bold">
+                Total({{shopInformation?.currency | currencyIcon}})
+              </td>
+              <td style="font-weight: bold">
+                {{ data1.purchaseAmount | number:'2.2-2' }}
+              </td>
+              <td style="font-weight: bold">
+                {{ data1.quantity}}
+              </td>
+              <td style="font-weight: bold">
+                {{ data1.saleAmount | number:'2.2-2' }}
+              </td>
+              <td style="font-weight: bold">
+                {{ data1.totalPurchaseAmount | number:'2.2-2' }}
+              </td>
+              <td style="font-weight: bold">
+                {{ data1.totalSaleAmount | number:'2.2-2' }}
+              </td>
+              <td style="font-weight: bold">
+                {{ getAvDiscount(data1.data) | number:'2.2-2' }}
+              </td>
+              <td style="font-weight: bold">
+                {{ data1.profit | number:'2.2-2' }}
+              </td>
+              <td style="font-weight: bold">
+                {{ data1.percentTotal}}%
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMPLATE NGX SPINNER-->
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.3)"
+  size="medium"
+  color="#fff"
+  type="ball-scale-pulse"
+  [fullScreen]="true"
+>
+  <p style="color: white">Loading...</p>
+</ngx-spinner>

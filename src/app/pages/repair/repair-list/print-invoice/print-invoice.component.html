@@ -1,0 +1,93 @@
+<div class="invoice">
+  <div class="header">
+    <h1>Repair Invoice</h1>
+    <p>{{ shopInformation?.shopName }}</p>
+    <p>{{ shopInformation?.shopAddress }}</p>
+    <p>Phone: {{ shopInformation?.shopPhoneNo }}</p>
+    <p>Date: {{ currentDateTime }}</p>
+  </div>
+
+
+  <div class="report-table">
+    <table>
+      <tr>
+        <td class="label">Brand Name</td>
+        <td colspan="2" class="content-text">{{ repairData?.brand?.name }}</td>
+        <td rowspan="3" colspan="2">
+          <div class="dots">
+            <span>•</span>
+            <span>•</span>
+            <span>•</span>
+          </div>
+          <div class="dots">
+            <span>•</span>
+            <span>•</span>
+            <span>•</span>
+          </div>
+          <div class="dots">
+            <span>•</span>
+            <span>•</span>
+            <span>•</span>
+          </div>
+
+        </td>
+      </tr>
+      <tr>
+        <td class="label">Model Name</td>
+        <td  colspan="2" class="content-text">{{ repairData?.modelNo?.name }}</td>
+      </tr>
+      <tr>
+        <td class="label">Colour</td>
+        <td  colspan="2" class="content-text">{{ repairData?.color?.name }}</td>
+      </tr>
+      <tr>
+        <td class="label">IMEI No</td>
+        <td class="content-text">{{ repairData?.imeiNo }}</td>
+        <td class="label" style="width: 20%">Password</td>
+        <td style="min-width: 50px" class="content-text">{{ repairData?.password }}</td>
+      </tr>
+      <tr>
+        <td class="label">Problem/Issue</td>
+        <td colspan="3" class="content-text">{{ repairData?.problem?.name }}</td>
+      </tr>
+      <tr>
+        <td class="label">Giving Time Conditions</td>
+        <td colspan="3" class="content-text">{{ repairData?.condition }}</td>
+      </tr>
+      <tr>
+        <td class="label">Contact No</td>
+        <td class="content-text">{{ repairData?.phoneNo }}</td>
+        <td class="label" style="width: 20%">Amount</td>
+        <td class="content-text">$ {{ repairData?.amount }}</td>
+      </tr>
+    </table>
+  </div>
+  <div class="note" *ngIf="repairData?.description">
+    <p>{{repairData?.description}}</p>
+  </div>
+  <div class="terms">
+    <h3><b>Terms and Conditions:</b></h3>
+    <p>1. We take for repair, Normally 3 to 4 Days without Public Holiday. This receipt must be produced when claiming
+      articles.</p>
+    <p>2. Replaced faulty parts of components will not be returned to customers.</p>
+    <p>3. We reserve the right to dispose the product 1 month after the date of given or the service is unpaid or if the
+      products are not collected by them.</p>
+    <p>4. Please check yourself after repair all everything is ok then collect. Because our company doesn't give any
+      warranty. After repair no refund, no warranty, no guarantee.</p>
+    <p>5. Without receipt cannot collect your phone.</p>
+  </div>
+
+  <footer>
+    <div class="signature">
+      <div class="line"></div>
+      <p>Customer Signature</p>
+    </div>
+    <div class="contact">
+      <div class="qr-code">
+        <qrcode [qrdata]="'Your data string'" [width]="50" [errorCorrectionLevel]="'M'"></qrcode>
+      </div>
+      <p>Contact Whatsapp</p>
+    </div>
+  </footer>
+
+</div>

@@ -1,0 +1,497 @@
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatCheckbox, MatCheckboxChange} from "@angular/material/checkbox";
+import {FormControl, FormGroup, NgForm} from "@angular/forms";
+import {MatDatepickerInputEvent} from "@angular/material/datepicker";
+import * as XLSX from 'xlsx';
+import {MatDialog} from "@angular/material/dialog";
+import {NgxSpinnerService} from "ngx-spinner";
+import {AdminPermissions} from '../../../enum/admin-permission.enum';
+import {Select} from '../../../interfaces/core/select';
+import {MONTHS, YEARS} from '../../../core/utils/app-data';
+import {Sale, SaleCalculation} from '../../../interfaces/common/sale.interface';
+import {ShopInformation} from '../../../interfaces/common/shop-information.interface';
+import {Subscription} from 'rxjs';
+import {SaleService} from '../../../services/common/sale.service';
+import {UiService} from '../../../services/core/ui.service';
+import {UtilsService} from '../../../services/core/utils.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {ReloadService} from '../../../services/core/reload.service';
+import {AdminService} from '../../../services/admin/admin.service';
+import {ShopInformationService} from '../../../services/common/shop-information.service';
+import {FilterData} from '../../../interfaces/core/filter-data';
+import {AdminRolesEnum} from '../../../enum/admin.roles.enum';
+import {CategoryService} from '../../../services/common/category.service';
+import {Category} from '../../../interfaces/common/category.interface';
+import {SubCategory} from '../../../interfaces/common/sub-category.interface';
+import {SubCategoryService} from '../../../services/common/sub-category.service';
+
+@Component({
+  selector: 'app-sale-list',
+  templateUrl: './product-sale-details.component.html',
+  styleUrls: ['./product-sale-details.component.scss'],
+})
+export class ProductSaleDetailsComponent implements OnInit, OnDestroy {
+  // Admin Base Data
+  adminId: string;
+  role: string;
+  permissions: AdminPermissions[];
+  categories: Category[] = [];
+  subCategories: SubCategory[] = [];
+
+  // Static Data
+  months: Select[] = MONTHS;
+  years: Select[] = YEARS;
+
+  // Store Data
+  id: string = null;
+  isLoading: boolean = true;
+  private allSales: Sale[] = [];
+  private holdAllSales: Sale[] = [];
+  reportsData: any[] = [];
+  sales: {
+    _id: string,
+    data: any[],
+    saleAmount: number,
+    purchaseAmount: number,
+    totalSaleAmount: number,
+    totalPurchaseAmount: number,
+    profit: number,
+    percent: number,
+    quantity: number,
+    percentTotal: number
+  }[] = [];
+  holdReportData: any[] = [];
+  calculation: SaleCalculation = null;
+  holdCalculation: SaleCalculation = null;
+  saleData: Sale = null;
+
+  // Shop data
+  shopInformation: ShopInformation;
+
+  // FilterData
+  isDefaultFilter: boolean = false;
+  filter: any = null;
+  sortQuery: any = null;
+  activeFilter1: number = null;
+  activeFilterMonth: number = null;
+  activeFilterCategory: number = null;
+  activeFilterSubCategory: number = null;
+  activeFilterYear: number = null;
+  activeSort: number;
+
+  // Selected Data
+  selectedIds: string[] = [];
+  @ViewChild('matCheckbox') matCheckbox: MatCheckbox;
+
+  // Data Table
+  @ViewChild('dataTable') dataTable: ElementRef;
+
+  // Date
+  today = new Date();
+  dataFormDateRange = new FormGroup({
+    start: new FormControl(),
+    end: new FormControl(),
+  });
+
+  // Search Area
+  @ViewChild('searchForm') searchForm: NgForm;
+  searchQuery = null;
+  searchSale: Sale[] = [];
+
+  // Subscriptions
+  private subDataOne: Subscription;
+  private subDataTwo: Subscription;
+  private subDataThree: Subscription;
+  private subDataExport: Subscription;
+  private subForm: Subscription;
+  private subRouteOne: Subscription;
+  private subReload: Subscription;
+  private subShopInfo: Subscription;
+  private subDataSeven: Subscription;
+
+
+  constructor(
+    private saleService: SaleService,
+    private uiService: UiService,
+    private utilsService: UtilsService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private dialog: MatDialog,
+    private spinner: NgxSpinnerService,
+    private reloadService: ReloadService,
+    private adminService: AdminService,
+    private categoryService: CategoryService,
+    private subCategoryService: SubCategoryService,
+    private shopInformationService: ShopInformationService,
+  ) {
+  }
+
+  ngOnInit(): void {
+
+    // Base Admin Data
+    this.getAdminBaseData();
+
+    this.subRouteOne = this.activatedRoute.paramMap.subscribe(param => {
+      this.id = param.get('id');
+      this.getProductSales();
+    })
+
+    // Set Default Filter
+    this.setDefaultFilter();
+    // Base Data
+    // this.getAllSale();
+    // this.getShopInformation();
+    // this.getAllCategory();
+  }
+
+  /**
+   * CHECK ADMIN PERMISSION
+   * checkAddPermission()
+   * checkDeletePermission()
+   * checkEditPermission()
+   * getAdminBaseData()
+   */
+  get checkAddPermission(): boolean {
+    return this.permissions.includes(AdminPermissions.CREATE);
+  }
+
+  get checkDeletePermission(): boolean {
+    return this.permissions.includes(AdminPermissions.DELETE);
+  }
+
+  get checkEditPermission(): boolean {
+    return this.permissions.includes(AdminPermissions.EDIT);
+  }
+
+  private getAdminBaseData() {
+    this.adminId = this.adminService.getAdminId();
+    this.role = this.adminService.getAdminRole();
+    this.permissions = this.adminService.getAdminPermissions();
+  }
+
+  /**
+   * HTTP REQ HANDLE
+   * getAllCategory()
+   * getAllSale()
+   * deleteSaleById()
+   */
+
+  private getSubCategoriesByCategoryId(categoryId: string) {
+    const select = 'name category slug'
+    this.subDataSeven = this.subCategoryService.getSubCategoriesByCategoryId(categoryId, select)
+      .subscribe(res => {
+        this.subCategories = res.data;
+
+      }, error => {
+        console.log(error);
+      });
+  }
+
+
+  private getAllCategory() {
+    // Select
+    const mSelect = {
+      name: 1,
+    };
+
+    const filterData: FilterData = {
+      pagination: null,
+      filter: null,
+      select: mSelect,
+      sort: {name: 1},
+    };
+
+    this.subDataOne = this.categoryService
+      .getAllCategory(filterData, null)
+      .subscribe({
+        next: (res) => {
+          this.categories = res.data;
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
+
+  private getProductSales() {
+    // Spinner..
+    this.spinner.show();
+    // Select
+    const mSelect = {
+      invoiceNo: 1,
+      date: 1,
+      customer: 1,
+      products: 1,
+      salesman: 1,
+      status: 1,
+      month: 1,
+      soldDate: 1,
+      total: 1,
+      soldDateString: 1,
+      soldTime: 1,
+      subTotal: 1,
+      discount: 1,
+      vatAmount: 1,
+      paidAmount: 1,
+      totalPurchasePrice: 1,
+      receivedFromCustomer: 1,
+      paymentType: 1,
+      category: 1,
+      subcategory: 1
+    };
+
+    let mFilter = {...this.filter, ...{'products._id': this.id}};
+    if (this.role === AdminRolesEnum.SALESMAN) {
+      mFilter = {...mFilter, ...{'salesman._id': this.adminId}}
+    }
+
+    const filter: FilterData = {
+      filter: mFilter,
+      pagination: null,
+      select: mSelect,
+      sort: {soldDate: -1},
+    };
+
+    this.subDataOne = this.saleService
+      .getProductSales(filter, null)
+      .subscribe({
+        next: (res) => {
+          this.reportsData = res.data;
+          this.isLoading = false;
+          this.spinner.hide();
+        },
+        error: (err) => {
+          this.isLoading = false;
+          this.spinner.hide();
+          console.log(err);
+        },
+      });
+  }
+
+
+  /**
+   * CALCULATIONS
+   * getPercent()
+   * getProductPercent()
+   */
+
+  getPercent(data: any) {
+    return Math.floor(((data.salePrice - data.purchasePrice) / data.purchasePrice) * 100)
+  }
+
+  getProductPercent(data: any) {
+    const profit = ((data?.products?.salePrice * data?.products?.soldQuantity) - (data?.products?.purchasePrice * data?.products?.soldQuantity) - data.discount);
+    const purchasePrice = data?.products?.purchasePrice *  data?.products?.soldQuantity;
+    return Math.floor((profit / purchasePrice) * 100);
+  }
+  /**
+   * FILTER DATA & Sorting
+   * setDefaultFilter()
+   * filterData()
+   * endChangeRegDateRange()
+   * sortData()
+   * onRemoveAllQuery()
+   */
+
+  private setDefaultFilter() {
+    this.isDefaultFilter = true;
+    const month = this.utilsService.getDateMonth(false, new Date());
+    const year = new Date().getFullYear();
+
+    this.filter = {
+      ...this.filter, ...{
+        month: month,
+        year: year,
+      }
+    }
+    this.activeFilterMonth = this.months.findIndex(f => f.value === month);
+    this.activeFilterYear = this.years.findIndex(f => f.value === year);
+  }
+
+  filterData(value: any, index: number, type: string) {
+    switch (type) {
+      case 'month': {
+        this.isDefaultFilter = false;
+        this.filter = {'month': value};
+        this.activeFilterMonth = index;
+        break;
+      }
+
+      default: {
+        break;
+      }
+    }
+    // Re fetch Data
+    this.getProductSales();
+  }
+
+  endChangeRegDateRange(event: MatDatepickerInputEvent<any>) {
+    if (event.value) {
+      const startDate = this.utilsService.getDateString(
+        this.dataFormDateRange.value.start
+      );
+      const endDate = this.utilsService.getDateString(
+        this.dataFormDateRange.value.end
+      );
+
+      const qData = {soldDateString: {$gte: startDate, $lte: endDate}};
+      this.isDefaultFilter = false;
+      this.filter = {...qData};
+      // const index = this.filter.findIndex(x => x.hasOwnProperty('createdAt'));
+
+      // Re fetch Data
+      this.getProductSales();
+    }
+  }
+
+
+  onRemoveAllQuery() {
+    this.activeSort = null;
+    this.activeFilter1 = null;
+    this.activeFilterMonth = null;
+    this.activeFilterCategory = null;
+    this.activeFilterSubCategory = null;
+    this.sortQuery = {createdAt: -1};
+    this.filter = null;
+    this.dataFormDateRange.reset();
+    this.setDefaultFilter();
+    // Re fetch Data
+    this.getProductSales();
+  }
+
+  onCategorySelect(name: string, index: number, id: string) {
+    this.isDefaultFilter = false;
+    this.reportsData = this.holdReportData.filter(f => f.category === name);
+    this.activeFilterCategory = index;
+
+    if (id) {
+      this.getSubCategoriesByCategoryId(id);
+    }
+
+
+  }
+
+  onSubCategorySelect(name: string, index: number) {
+    this.isDefaultFilter = false;
+    this.reportsData = this.holdReportData.filter(f => f.subcategory === name);
+    this.activeFilterSubCategory = index;
+
+  }
+
+  /**
+   * ON Select Check
+   * onCheckChange()
+   * onAllSelectChange()
+   * checkSelectionData()
+   */
+
+  onCheckChange(event: any, index: number, id: string) {
+    if (event) {
+      this.selectedIds.push(id);
+    } else {
+      const i = this.selectedIds.findIndex((f) => f === id);
+      this.selectedIds.splice(i, 1);
+    }
+  }
+
+  onAllSelectChange(event: MatCheckboxChange, data: Sale[], index: number) {
+    const currentPageIds = data.map((m) => m._id);
+    if (event.checked) {
+      this.selectedIds = this.utilsService.mergeArrayString(
+        this.selectedIds,
+        currentPageIds
+      );
+      this.sales[index].data.forEach((m) => {
+        m.select = true;
+      });
+    } else {
+      currentPageIds.forEach((m) => {
+        this.sales[index].data.find((f) => f._id === m).select = false;
+        const i = this.selectedIds.findIndex((f) => f === m);
+        this.selectedIds.splice(i, 1);
+      });
+    }
+  }
+
+  /**
+   * EXPORTS TO EXCEL
+   * exportToExcel()
+   */
+
+  exportToAllExcel() {
+    const date = this.utilsService.getDateString(new Date());
+
+    const mData: any = this.holdReportData.map((m, i) => {
+      return {
+        'SL': i + 1,
+        // 'Sold Date': m.soldDateString,
+        'Product Name': m.productName,
+        // 'Purchase Price': m.purchasePrice,
+        'Quantity': m.soldQuantity,
+        // 'Sale Price': m.salePrice,
+        // 'TP. Price': m.purchasePrice * m.soldQuantity,
+        // 'TS. Price': m.salePrice * m.soldQuantity,
+        // 'Profit/Loss': (m.salePrice * m.soldQuantity) - (m.purchasePrice * m.soldQuantity),
+        // 'Percent': this.getPercent(m) + '%',
+      }
+    })
+    // mData.push({
+    //   'SL': 'Total',
+    //   'Product Name': '',
+    //   'Purchase Price': this.holdReportData.map(t => t['purchasePrice']?? 0).reduce((acc, value) => acc + value, 0),
+    //   'Quantity': this.holdReportData.map(t => t['soldQuantity']?? 0).reduce((acc, value) => acc + value, 0),
+    //   'Sale Price': this.holdReportData.map(t => t['salePrice']?? 0).reduce((acc, value) => acc + value, 0),
+    //   'TP. Price': this.holdReportData.map(t => (t['purchasePrice'] * t['soldQuantity'])?? 0).reduce((acc, value) => acc + value, 0),
+    //   'TS. Price': this.holdReportData.map(t => (t['purchasePrice'] * t['soldQuantity'])?? 0).reduce((acc, value) => acc + value, 0),
+    //   'Profit/Loss': (m.salePrice * m.soldQuantity) - (m.purchasePrice * m.soldQuantity),
+    //   'Percent': this.getPercent(m) + '%',
+    // })
+
+    const ws: XLSX.WorkSheet = XLSX.utils.table_to_sheet(this.dataTable.nativeElement)
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Data');
+    XLSX.writeFile(wb, `${this.reportsData[0].products?.name}_${date}.xlsx`);
+  }
+
+
+  /**
+   * ON DESTROY
+   */
+
+  ngOnDestroy() {
+    if (this.subDataOne) {
+      this.subDataOne.unsubscribe();
+    }
+
+    if (this.subDataTwo) {
+      this.subDataTwo.unsubscribe();
+    }
+
+
+    if (this.subDataThree) {
+      this.subDataThree.unsubscribe();
+    }
+
+    if (this.subRouteOne) {
+      this.subRouteOne.unsubscribe();
+    }
+
+    if (this.subForm) {
+      this.subForm.unsubscribe();
+    }
+
+    if (this.subReload) {
+      this.subReload.unsubscribe();
+    }
+    if (this.subDataExport) {
+      this.subDataExport.unsubscribe();
+    }
+    if (this.subShopInfo) {
+      this.subShopInfo.unsubscribe();
+    }
+    if (this.subDataSeven) {
+      this.subDataSeven.unsubscribe();
+    }
+  }
+
+}

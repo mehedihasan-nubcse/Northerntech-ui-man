@@ -1,0 +1,144 @@
+@import "src/theme/variables";
+.image-uploads {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.container {
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+.input-area {
+  margin-bottom: 10px;
+  p {
+    font-family: $font-en-primary;
+    font-size: 15px;
+    font-weight: 600;
+    padding-left: 10px;
+  }
+
+
+  .form {
+    margin-top: 20px;
+    p{
+      color: #333;
+      font-family: $font-en-primary;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 17px;
+      display: block;
+      margin-bottom: 10px!important;
+    }
+
+    .rating-form-field {
+      margin-left: 10px;
+      width: 100%;
+      max-width: 520px;
+    }
+  }
+
+  .action {
+    padding-left: 10px;
+    margin-top: 25px;
+  }
+}
+.login-card {
+  margin-bottom: 10px;
+  width: 100%;
+  max-width: 520px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cccccc;
+  flex-direction: column;
+  gap: 10px;
+  font-family: $font-en-primary;
+
+
+}
+
+.reviews {
+  width: 100%;
+  font-family: $font-en-primary;
+  padding: 0 10px;
+
+  .review-list {
+    margin-bottom: 8px;
+    width: 100%;
+    max-width: 860px;
+
+    .item {
+      width: 100%;
+      padding: 16px 0;
+      border-bottom: 1px solid #e2e2e2;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: row;
+      gap: 16px;
+
+      .img-thumb {
+        width: 60px;
+        height: auto;
+
+        img {
+          width: 100%;
+          height: auto;
+        }
+      }
+
+      .main-view {
+        .top {
+          display: flex;
+          align-items: flex-end;
+          gap: 12px;
+
+          .name {
+            font-size: 18px;
+          }
+
+          .date {
+            font-size: 12px;
+            font-weight: bold;
+            color: #2e3192;
+          }
+        }
+
+        .rating {
+          margin-left: -10px;
+        }
+      }
+
+    }
+  }
+
+}
+
+
+.content-main{
+  display: block;
+  background-color: #fff;
+  padding: 20px;
+  box-sizing: border-box;
+  .title{
+    margin-bottom: 10px;
+  }
+}
+
+
+@media only screen and (max-width: 599px) {
+  .input-area {
+    padding: 0 12px;
+
+    .form {
+      margin-top: 20px;
+
+      .rating-form-field {
+        margin-left: 0;
+        width: 100% !important;
+      }
+    }
+  }
+}

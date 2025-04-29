@@ -1,0 +1,326 @@
+<section class="add-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Repair Add</h4>
+      <h6>{{ id ? "Update" : "Add" }} Repairs</h6>
+    </div>
+  </div>
+</section>
+
+<section class="from-section" id="sale-list-table-view">
+  <form
+    #formElement="ngForm"
+    [formGroup]="dataForm"
+    (ngSubmit)="onSubmit()"
+    class="area-border"
+  >
+    <div class="grid">
+
+      <div class="from">
+        <mat-label>Repair Date</mat-label>
+        <mat-form-field appearance="outline">
+          <input
+            formControlName="date"
+            matInput
+            [matDatepicker]="picker"
+            required
+            placeholder="Choose Date"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error>This field is required.</mat-error>
+        </mat-form-field>
+      </div>
+
+    </div>
+   <div class="form-area">
+<!--     <div class="from">-->
+<!--       <mat-label>Brand Name</mat-label>-->
+<!--       <mat-form-field appearance="outline">-->
+<!--         <input formControlName="brand" matInput />-->
+<!--         &lt;!&ndash;        <mat-error>This field is required.</mat-error>&ndash;&gt;-->
+<!--       </mat-form-field>-->
+<!--     </div>-->
+     <div class="from form-flex">
+       <div style="width: 100%;">
+         <mat-label>Brand <sup>*</sup></mat-label>
+         <mat-form-field appearance="outline">
+           <mat-select  formControlName="brand" placeholder="Choose brand" required>
+             <mat-option [value]="null">None</mat-option>
+             <mat-option *ngFor="let data of brand" [value]="data?._id">
+               {{data?.name}}
+             </mat-option>
+           </mat-select>
+         </mat-form-field>
+       </div>
+
+       <div class="add-icon">
+         <a (click)="onToggle('brand')"
+            [class]="brandForm ? 'active' : ''">
+           <img [src]="
+                brandForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+       </div>
+     </div>
+
+<!--     <div class="from">-->
+<!--       <mat-label>Model Name <sup>*</sup></mat-label>-->
+<!--       <mat-form-field appearance="outline">-->
+<!--         <input formControlName="modelNo" matInput required />-->
+<!--         &lt;!&ndash;        <mat-error>This field is required.</mat-error>&ndash;&gt;-->
+<!--       </mat-form-field>-->
+<!--     </div>-->
+
+     <div class="from form-flex">
+       <div style="width: 100%;">
+         <mat-label>Model Name <sup>*</sup></mat-label>
+         <mat-form-field appearance="outline">
+           <mat-select  formControlName="modelNo" placeholder="Choose model" required>
+             <mat-option [value]="null">None</mat-option>
+             <mat-option *ngFor="let data of model" [value]="data?._id">
+               {{data?.name}}
+             </mat-option>
+           </mat-select>
+         </mat-form-field>
+       </div>
+
+       <div class="add-icon">
+         <a (click)="onToggle('model')"
+            [class]="modelForm ? 'active' : ''">
+           <img [src]="
+                modelForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+       </div>
+     </div>
+<!--     <div class="from">-->
+<!--       <mat-label>Colour</mat-label>-->
+<!--       <mat-form-field appearance="outline">-->
+<!--         <input formControlName="colour" matInput />-->
+<!--         &lt;!&ndash;        <mat-error>This field is required.</mat-error>&ndash;&gt;-->
+<!--       </mat-form-field>-->
+<!--     </div>-->
+
+     <div class="from form-flex">
+       <div style="width: 100%;">
+         <mat-label>Color <sup>*</sup></mat-label>
+         <mat-form-field appearance="outline">
+           <mat-select  formControlName="color" placeholder="Choose color">
+             <mat-option [value]="null">None</mat-option>
+             <mat-option *ngFor="let data of colors" [value]="data?._id">
+               {{data?.name}}
+             </mat-option>
+           </mat-select>
+         </mat-form-field>
+       </div>
+
+       <div class="add-icon">
+         <a (click)="onToggle('color')"
+            [class]="colorForm ? 'active' : ''">
+           <img [src]="
+                colorForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+       </div>
+     </div>
+
+     <div class="from">
+       <mat-label>IMEI NO</mat-label>
+       <mat-form-field appearance="outline">
+         <input formControlName="imeiNo" matInput />
+         <!--        <mat-error>This field is required.</mat-error>-->
+       </mat-form-field>
+     </div>
+
+     <div class="from">
+       <mat-label>Password</mat-label>
+       <mat-form-field appearance="outline">
+         <input formControlName="password" matInput />
+         <!--        <mat-error>This field is required.</mat-error>-->
+       </mat-form-field>
+     </div>
+
+<!--     <div class="from">-->
+<!--       <mat-label>FIN/NRIC No</mat-label>-->
+<!--       <mat-form-field appearance="outline">-->
+<!--         <input formControlName="nricNo" matInput />-->
+<!--         &lt;!&ndash;        <mat-error>This field is required.</mat-error>&ndash;&gt;-->
+<!--       </mat-form-field>-->
+<!--     </div>-->
+<!--     <div class="from">-->
+<!--       <mat-label>Problem/Issue</mat-label>-->
+<!--       <mat-form-field appearance="outline">-->
+<!--         <input formControlName="problem" matInput />-->
+<!--         &lt;!&ndash;        <mat-error>This field is required.</mat-error>&ndash;&gt;-->
+<!--       </mat-form-field>-->
+<!--     </div>-->
+
+     <div class="from form-flex">
+       <div style="width: 100%;">
+         <mat-label>Problem/Issue <sup>*</sup></mat-label>
+         <mat-form-field appearance="outline">
+           <mat-select  formControlName="problem" placeholder="Choose problem" required>
+             <mat-option [value]="null">None</mat-option>
+             <mat-option *ngFor="let data of problem" [value]="data?._id">
+               {{data?.name}}
+             </mat-option>
+           </mat-select>
+         </mat-form-field>
+       </div>
+
+       <div class="add-icon">
+         <a (click)="onToggle('problem')"
+            [class]="problemForm ? 'active' : ''">
+           <img [src]="
+                problemForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+       </div>
+     </div>
+<!--     <div class="from">-->
+<!--       <mat-label>Giving Time Condition</mat-label>-->
+<!--       <mat-form-field appearance="outline">-->
+<!--         <input formControlName="condition" matInput />-->
+<!--         &lt;!&ndash;        <mat-error>This field is required.</mat-error>&ndash;&gt;-->
+<!--       </mat-form-field>-->
+<!--     </div>-->
+     <div style="width: 100%;">
+       <mat-label>Giving Time Condition <sup>*</sup></mat-label>
+       <mat-form-field appearance="outline">
+         <mat-select  formControlName="condition" placeholder="Choose condition" required>
+           <mat-option value="null">None</mat-option>
+           <mat-option value="Phone off condition">Phone off condition</mat-option>
+           <mat-option value="Phone on condition">Phone on condition</mat-option>
+         </mat-select>
+       </mat-form-field>
+     </div>
+
+
+
+     <div class="from">
+       <mat-label>Customer Phone No <sup>*</sup></mat-label>
+       <mat-form-field appearance="outline">
+         <input formControlName="phoneNo" matInput required />
+         <!--        <mat-error>This field is required.</mat-error>-->
+       </mat-form-field>
+     </div>
+
+
+     <div class="from">
+       <mat-label>Amount</mat-label>
+       <mat-form-field appearance="outline">
+         <input
+           formControlName="amount"
+           matInput
+           digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true"
+         />
+       </mat-form-field>
+     </div>
+
+
+<!--     <div style="width: 100%;">-->
+<!--       <mat-label>Repair Status</mat-label>-->
+<!--       <mat-form-field appearance="outline">-->
+<!--         <mat-select  formControlName="status" placeholder="Choose status" required>-->
+<!--           <mat-option value="null">None</mat-option>-->
+<!--           <mat-option value="Pending">Pending</mat-option>-->
+<!--           <mat-option value="Delivered">Delivered</mat-option>-->
+<!--         </mat-select>-->
+<!--       </mat-form-field>-->
+<!--     </div>-->
+   </div>
+
+    <div style="margin-bottom: 20px" *ngIf="colorForm">
+      <app-color-add (onAddData)="onAddNewColor($event)"></app-color-add>
+    </div> <!-- END! Color Input Form Component -->
+
+    <div style="margin-bottom: 20px" *ngIf="brandForm">
+      <app-brand-add (onAddData)="onAddNewBrand($event)"></app-brand-add>
+    </div> <!-- END! Color Input Form Component -->
+
+    <div style="margin-bottom: 20px" *ngIf="problemForm">
+      <app-problem-add (onAddData)="onAddNewProblem($event)"></app-problem-add>
+    </div> <!-- END! Color Input Form Component -->
+
+    <div style="margin-bottom: 20px" *ngIf="modelForm">
+      <app-model-add (onAddData)="onAddNewModel($event)"></app-model-add>
+    </div> <!-- END! Color Input Form Component -->
+
+    <div class="from">
+      <mat-label>Note</mat-label>
+      <mat-form-field appearance="outline" >
+        <textarea
+          class="text-area"
+          formControlName="description"
+          matInput
+        ></textarea>
+      </mat-form-field>
+    </div>
+
+
+    <div  class="content-main content-2" >
+      <!--  <div class="image-container" [ngClass]="{'border-dashed': !chooseImage.length}">-->
+      <!--    <div class="picker" *ngIf="!chooseImage.length">-->
+      <!--      <div class="action">-->
+      <!--        <div class="icon">-->
+      <!--          <span class="material-icons">cloud_upload</span>-->
+      <!--        </div>-->
+      <!--        <button type="button" mat-stroked-button color="accent" (click)="openGalleryDialog()">-->
+      <!--          Pick Images-->
+      <!--        </button>-->
+      <!--        <p>Maximum 10 Image you can upload</p>-->
+      <!--      </div>-->
+      <!--    </div> &lt;!&ndash; END Picker Area &ndash;&gt;-->
+
+      <!--    <div *ngIf="chooseImage && chooseImage.length" class="img-preview-container" cdkDropList-->
+      <!--         cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">-->
+      <!--      <div class="preview" *ngFor="let data of chooseImage" cdkDrag>-->
+      <!--        <img [src]="data" [alt]="data">-->
+      <!--        <div class="overlay-ac">-->
+      <!--          <button type="button" mat-icon-button color="warn" (click)="removeSelectImage(data)">-->
+      <!--            <mat-icon>delete</mat-icon>-->
+      <!--          </button>-->
+      <!--        </div>-->
+      <!--      </div>-->
+      <!--      <div class="add-more" *ngIf="chooseImage.length < 10">-->
+      <!--        <div class="icon">-->
+      <!--          <span class="material-icons">cloud_upload</span>-->
+      <!--        </div>-->
+      <!--        <button type="button" mat-stroked-button color="accent" (click)="openGalleryDialog()">-->
+      <!--          Pick Images-->
+      <!--        </button>-->
+      <!--      </div>-->
+      <!--    </div>-->
+
+      <!--  </div>-->
+
+
+    </div>
+
+
+
+
+    <div class="btn">
+      <button mat-raised-button type="submit" class="btn-submit">
+        {{ id ? "Update" : "Submit" }}
+      </button>
+      <button
+        routerLink="/repair/repair-list"
+        mat-raised-button
+        class="btn-submit color"
+      >
+        Go Back
+      </button>
+    </div>
+  </form> <!-- END FORM -->
+</section>
+<!--style="visibility: hidden"-->
+<app-repair-invoice style="visibility: hidden" id="section-pos-print" [repairData]="repairData" [shopInformation]="shopInformation"></app-repair-invoice>

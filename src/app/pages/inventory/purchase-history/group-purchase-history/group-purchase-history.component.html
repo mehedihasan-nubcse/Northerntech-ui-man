@@ -1,0 +1,191 @@
+<section class="page-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Purchase History LIST</h4>
+      <h6>Manage your purchase history</h6>
+    </div>
+  </div>
+</section> <!-- END Header Area -->
+
+
+<section class="table-section">
+  <div class="mat-elevation-z8">
+
+
+    <div class="search-div">
+      <div class="search-set">
+        <!--      <div (click)="onToggle()" class="filter-show">-->
+        <!--        <a class="btn btn-filter">-->
+        <!--            <span *ngIf="!toggleMenu" class="material-symbols-outlined"-->
+        <!--            >filter_alt</span-->
+        <!--            >-->
+        <!--          <a>-->
+        <!--            <a *ngIf="toggleMenu" class="close-button">-->
+        <!--              <span class="material-symbols-outlined">close</span>-->
+        <!--            </a>-->
+        <!--          </a>-->
+        <!--        </a>-->
+        <!--      </div>-->
+<!--        <div class="search-input">-->
+<!--          <a class="btn btn-searchset">-->
+<!--            <mat-icon>search</mat-icon>-->
+<!--          </a>-->
+<!--          <form class="table-search" #searchForm="ngForm">-->
+<!--            <input-->
+<!--              type="search"-->
+<!--              #searchInput-->
+<!--              name="searchTerm"-->
+<!--              autocomplete="off"-->
+<!--              ngModel-->
+<!--              placeholder="Search..."-->
+<!--            />-->
+<!--          </form>-->
+<!--        </div>-->
+      </div>
+
+    </div>
+
+
+
+    <div class="table-top">
+
+      <div class="sort">
+        <button mat-raised-button class="button-style" (click)="exportToAllExcel()">
+          Export as Excel
+          <mat-icon>file_download</mat-icon>
+        </button>
+      </div>
+
+    </div> <!-- END Table Top -->
+
+    <div class="total-calc">
+      <div class="card-border">
+        <h2>Total Amount: {{allPurchaseByDate ? allPurchaseByDate[0]?.totalPurchaseTotal : 0  | number: '' : 'bn'}}</h2>
+      </div>
+    </div>
+
+    <div
+      class="container filter-area">
+      <div
+        class="left"
+        style="margin-bottom: 10px"
+        *ngIf="!isDefaultFilter && (filter || activeSort)"
+      >
+        <div>
+          <button mat-stroked-button (click)="onRemoveAllQuery()">
+            <mat-icon>close</mat-icon>
+            Clear FilterData
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-area" *ngIf="selectedIds && selectedIds.length">
+      <div class="delete-area">
+        <button
+          *ngIf="checkDeletePermission"
+          mat-stroked-button
+          color="warn"
+          (click)="openConfirmDialog('delete')"
+          matTooltip="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <app-no-content
+      *ngIf="!isLoading && !allPurchaseByDate.length"
+      [matIcon]="'info'"
+      title="No data Found!"
+    ></app-no-content>
+    <div *ngFor="let data1 of allPurchaseByDate; let i = index">
+      <div class="header">
+        <h2>{{ data1?.date | date}}, {{getDay(data1?.date)}}</h2>
+        <!--        <h2>{{ data?.data?.dateString }}</h2>-->
+        <!--        <h2></h2>-->
+      </div>
+      <div class="container">
+        <div class="table-responsive">
+          <table >
+            <tr class="table-row">
+              <th class="t-checkbox">
+                <mat-checkbox
+                  #matCheckbox
+                  (change)="onAllSelectChange($event, data1.purchases, i)"
+                  class="mat-check"
+                ></mat-checkbox>
+              </th>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Supplier</th>
+              <th>IMEI</th>
+              <th>Purchase Time</th>
+              <th>In Person Name</th>
+<!--              <th>Previous Quantity</th>-->
+              <th>Quantity(+/-)</th>
+              <th>Purchase Price</th>
+              <th>Total Purchase</th>
+              <th>Note</th>
+<!--              <th>Action</th>-->
+            </tr>
+            <tr *ngFor="let data of data1.purchases; let j = index" class="table-hover">
+              <td class="t-checkbox">
+                <mat-checkbox
+                  class="t-mat-checkbox"
+                  [(ngModel)]="data.select"
+                  (ngModelChange)="onCheckChange($event, j, data._id)"
+                ></mat-checkbox>
+              </td>
+              <td>{{ data?.name }}</td>
+              <td>{{ data?.category?.name ?? '-'}}</td>
+              <td>{{ data?.vendor?.name ?? '-' }}</td>
+              <td>{{ data?.imei ?? '-' }}</td>
+              <td>{{ data?.createTime }}</td>
+              <td>{{ data?.salesman }}</td>
+<!--              <td>{{ data?.previousQuantity ?? '-'}}</td>-->
+              <td>{{(data?.updatedQuantity) > 0 ? '+' : ''}}{{ (data?.updatedQuantity)}}</td>
+
+              <td>{{shopInformation?.currency | currencyIcon}} {{ data?.purchasePrice | number : "" : "bn" || "-"}}</td>
+              <td>
+                {{shopInformation?.currency | currencyIcon}} {{ data?.totalPurchase  | number : "" : "bn" || "-" }}</td>
+              <td>{{ data?.note ?? '-'}}</td>
+            </tr>
+            <tr class="table-hover" style="background: #fff5ea">
+              <td></td>
+              <td style="font-weight: bold">Total({{shopInformation?.currency | currencyIcon}})</td>
+
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td style="font-weight: bold">
+                {{  data1?.purchasePriceTotal| number : "" : "bn" || "-" }}
+              </td>
+              <td style="font-weight: bold">
+                {{ data1?.totalPurchaseTotal| number : "" : "bn" || "-" }}
+              </td>
+              <td>
+
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMPLATE NGX SPINNER-->
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.3)"
+  size="medium"
+  color="#fff"
+  type="ball-scale-pulse"
+  [fullScreen]="true"
+>
+  <p style="color: white">Loading...</p>
+</ngx-spinner>
+

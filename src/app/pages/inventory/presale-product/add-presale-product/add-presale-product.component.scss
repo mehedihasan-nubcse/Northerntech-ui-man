@@ -1,0 +1,68 @@
+@import "/src/theme/exports/add-from";
+
+
+
+.quantity-row {
+  display: flex;
+
+  gap: 16px;
+}
+
+.from-qty {
+  width: 155px;
+}
+
+
+.form-flex {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-icon {
+  cursor: pointer;
+
+  a {
+
+    width: 40px;
+    height: 40px;
+    background: #137ABD;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+
+    img {
+      width: 25px;
+    }
+
+    &.active {
+      background-color: #EA5455;
+
+      img {
+        width: 12px;
+      }
+    }
+
+    &:hover {
+      background: #212b36;
+    }
+  }
+}
+
+
+.add-vendor-icon {
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  background: #137ABD;
+  color: #fff;
+}
+
+.add-vendor-icon:hover {
+  background: #fe820e;
+  color: #fff;
+}
+

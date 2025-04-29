@@ -1,0 +1,26 @@
+<!-- table-details-dialog.component.html -->
+<div class="dialog-container">
+  <div class="dialog-header">
+    <h2 class="dialog-title">Select Branch</h2>
+    <button class="close-button" (click)="closeDialog()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+        <path id="Path_50" data-name="Path 50" d="M19,6.41,17.59,5,12,10.59,6.41,5,5,6.41,10.59,12,5,17.59,6.41,19,12,13.41,17.59,19,19,17.59,13.41,12Z" transform="translate(-5 -5)" fill="#5f6368"/>
+      </svg>
+    </button>
+  </div>
+
+  <div class="dialog-content" *ngFor="let data of shops">
+
+      <div class="card">
+        <h4>Branch Name: {{data.name}}</h4>
+<!--        <p>Url: {{data.domain ? data.domain : data.subDomain}}</p>-->
+        <div class="action">
+          <button mat-raised-button color="primary" (click)="onSelect(data._id)">Select</button>
+        </div>
+      </div>
+
+
+  </div>
+
+
+</div>

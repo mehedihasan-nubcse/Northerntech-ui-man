@@ -1,0 +1,93 @@
+<div class="dialog-container">
+
+  <div class="close">
+    <button mat-icon-button type="button" (click)="onClose()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <div class="top-input-header">
+    <div class="title">
+<!--      <h2>Out Stock / In Stock</h2>-->
+      <h2>Out Stock</h2>
+      <p>{{product?.name}}</p>
+    </div>
+  </div> <!-- END Input Form Header -->
+
+
+  <form #formElement="ngForm" [formGroup]="dataForm" (ngSubmit)="onSubmit()" autocomplete="off">
+
+    <div class="grid1">
+      <div class="from payment-btn">
+        <button type="button" (click)="onTabClick(data.value)"
+                [class.active]="activeTab == data.value"
+                class="tab-link"  *ngFor="let data of stockData">
+          {{data.viewValue}}
+        </button>
+      </div>
+    </div>
+
+
+    <mat-form-field appearance="outline" (click)="picker.open()" class="w-100 px-1">
+      <mat-label>Date</mat-label>
+      <input readonly [matDatepicker]="picker" formControlName="date" matInput
+             placeholder="Enter task date" [max]="today">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error>This field is required</mat-error>
+    </mat-form-field>
+
+<!--    <mat-form-field appearance="outline" class="w-100 px-1">-->
+<!--      <mat-label>Quantity</mat-label>-->
+<!--      <input formControlName="quantity" matInput-->
+<!--             type="number"-->
+<!--             digitOnly-->
+<!--             [allowNegatives]="true"-->
+<!--             placeholder="Enter quantity">-->
+<!--      <mat-error>This field is required</mat-error>-->
+<!--    </mat-form-field>-->
+
+    <mat-form-field appearance="outline" class="w-100 px-1">
+      <mat-label>Quantity</mat-label>
+      <input formControlName="quantity" matInput
+             type="number"
+             min="0"
+             [max]="product?.quantity"
+             placeholder="Enter quantity"
+             (input)="onQuantityInput()">
+
+      <!-- Validation Error Messages -->
+      <mat-error *ngIf="dataForm.get('quantity')?.hasError('required')">
+        This field is required
+      </mat-error>
+      <mat-error *ngIf="dataForm.get('quantity')?.hasError('min')">
+        Quantity must be at least 1
+      </mat-error>
+      <mat-error *ngIf="dataForm.get('quantity')?.hasError('max')">
+        Quantity cannot exceed {{product?.quantity}}
+      </mat-error>
+    </mat-form-field>
+
+
+
+    <mat-form-field appearance="outline" class="w-100 px-1">
+      <mat-label>Note</mat-label>
+      <textarea formControlName="note" matInput placeholder="Enter description" [rows]="3"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-100 px-1">
+      <mat-label>Out Stock Person Name</mat-label>
+      <input formControlName="salesman" matInput
+             type="text"
+             placeholder="Enter Out Stock Person Name">
+      <mat-error>This field is required</mat-error>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">
+      Submit
+    </button>
+
+  </form>
+
+
+</div>

@@ -1,0 +1,289 @@
+<section class="page-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Sales Records</h4>
+      <h6>Manage your sale record</h6>
+    </div>
+  </div>
+</section> <!-- END Header Area -->
+
+
+<section class="table-section" id="sale-list-table-view">
+  <div class="mat-elevation-z8">
+    <div class="table-top">
+      <div class="date-filter">
+        <mat-form-field
+          class="mat-date-input-field"
+          appearance="outline"
+          (click)="picker.open()"
+        >
+          <mat-label class="filter-date">Filter Date</mat-label>
+          <mat-date-range-input
+            [formGroup]="dataFormDateRange"
+            [rangePicker]="picker"
+            [max]="today"
+          >
+            <input
+              matStartDate
+              formControlName="start"
+              placeholder="Start date"
+              readonly
+            />
+            <input
+              matEndDate
+              formControlName="end"
+              placeholder="End date"
+              readonly
+              (dateChange)="endChangeRegDateRange($event)"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+
+          <mat-error
+            *ngIf="
+              dataFormDateRange.controls.start.hasError('matStartDateInvalid')
+            "
+          >Invalid start date
+          </mat-error>
+          <mat-error
+            *ngIf="dataFormDateRange.controls.end.hasError('matEndDateInvalid')"
+          >Invalid end date
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+<!--      <div class="sort">-->
+<!--        <button mat-raised-button [matMenuTriggerFor]="menuMonth" class="button-style">-->
+<!--          {{months[activeFilterMonth]?.viewValue || 'Month'}}-->
+<!--          <mat-icon>keyboard_arrow_down</mat-icon>-->
+<!--        </button>-->
+<!--        <mat-menu #menuMonth="matMenu">-->
+<!--          <button-->
+<!--            *ngFor="let data of months; let i = index"-->
+<!--            mat-menu-item-->
+<!--            (click)="filterData(data.value, i, 'month')"-->
+<!--            [class.dropdown-active]="activeFilterMonth === i"-->
+<!--          >-->
+<!--            {{ data?.viewValue }}-->
+<!--          </button>-->
+<!--        </mat-menu>-->
+<!--      </div>-->
+
+
+
+<!--      <div class="sort">-->
+<!--        <button mat-raised-button [matMenuTriggerFor]="menuSubCategory" class="button-style">-->
+<!--          {{subCategories[activeFilterSubCategory]?.name || 'SubCategory'}}-->
+<!--          <mat-icon>keyboard_arrow_down</mat-icon>-->
+<!--        </button>-->
+<!--        <mat-menu #menuSubCategory="matMenu" >-->
+<!--          <button-->
+<!--            *ngFor="let data of subCategories; let i = index"-->
+<!--            mat-menu-item-->
+<!--            (click)="onSubCategorySelect(data.name, i)"-->
+<!--            [class.dropdown-active]="activeFilterSubCategory === i"-->
+<!--          >-->
+<!--            {{ data?.name }}-->
+<!--          </button>-->
+<!--        </mat-menu>-->
+<!--      </div>-->
+
+      <div class="sort">
+        <button mat-raised-button class="button-style" (click)="exportToAllExcel()">
+          Export as Excel
+          <mat-icon>file_download</mat-icon>
+        </button>
+      </div>
+
+      <div class="sort">
+<!--        <button mat-raised-button [matMenuTriggerFor]="menuCategory" class="button-style">-->
+<!--          {{categories[activeFilter1]?.name || 'Category'}}-->
+<!--          <mat-icon>keyboard_arrow_down</mat-icon>-->
+<!--        </button>-->
+<!--        <mat-menu #menuCategory="matMenu" >-->
+<!--&lt;!&ndash;          <button   mat-menu-item (click)="onRemoveAllCategory()">All Category</button>&ndash;&gt;-->
+<!--&lt;!&ndash;          <button&ndash;&gt;-->
+<!--&lt;!&ndash;            *ngFor="let data of categories; let i = index"&ndash;&gt;-->
+<!--&lt;!&ndash;            mat-menu-item&ndash;&gt;-->
+<!--&lt;!&ndash;            (click)="filterData(data, i, 'category')"&ndash;&gt;-->
+<!--&lt;!&ndash;            [class.dropdown-active]="activeFilter1 === i"&ndash;&gt;-->
+<!--&lt;!&ndash;          >&ndash;&gt;-->
+<!--&lt;!&ndash;            {{ data?.name }}&ndash;&gt;-->
+<!--&lt;!&ndash;          </button>&ndash;&gt;-->
+
+<!--&lt;!&ndash;          <button&ndash;&gt;-->
+<!--&lt;!&ndash;            *ngFor="let data of categories; let i = index"&ndash;&gt;-->
+<!--&lt;!&ndash;            mat-menu-item&ndash;&gt;-->
+<!--&lt;!&ndash;            (click)="toggleSelection(data, i)"&ndash;&gt;-->
+<!--&lt;!&ndash;            [class.dropdown-active]="isSelected(i)"&ndash;&gt;-->
+<!--&lt;!&ndash;          >&ndash;&gt;-->
+<!--&lt;!&ndash;            {{ data?.name }}&ndash;&gt;-->
+<!--&lt;!&ndash;          </button>&ndash;&gt;-->
+
+<!--          <button-->
+<!--            *ngFor="let data of categories; let i = index"-->
+<!--            mat-menu-item-->
+<!--            (click)="toggleSelection(data, i)"-->
+<!--            [class.dropdown-active]="isSelected(i)"-->
+<!--          >-->
+<!--            {{ data?.name }}-->
+<!--            <mat-icon *ngIf="isSelected(i)">check</mat-icon>-->
+<!--          </button>-->
+
+<!--        </mat-menu>-->
+
+        <mat-form-field appearance="fill">
+          <mat-label>Select Categories</mat-label>
+          <mat-select
+            [multiple]="true"
+
+          >
+            <mat-option
+              *ngFor="let data of categories; let i = index"
+              [value]="data"
+              (click)="toggleSelection(data, i)"
+            >
+              {{ data?.name }}
+<!--              <mat-icon *ngIf="isSelected(i)">check</mat-icon>-->
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+<!--        (selectionChange)="onSelectionChange($event)"-->
+
+      </div>
+
+      <button class="print-btn" color="primary" style="margin-bottom: 10px; margin-right: 10px;" (click)="openConfirmDialogPayout( isCategoryFilter ? 'print-category' : 'print-all')" mat-raised-button matTooltip="Print All">
+        <mat-icon >print</mat-icon>
+       <span>Print</span>
+      </button>
+
+
+
+    </div> <!-- END Table Top -->
+
+<!--    <div class="table-top-second">-->
+<!--      <select id="categoryDropdown">-->
+<!--        <option value="" disabled selected>Categories</option>-->
+<!--        <option *ngFor="let data of categories" [value]="data?._id">{{ data?.name }}</option>-->
+<!--      </select>-->
+<!--    </div>-->
+
+
+
+
+    <!--    <div class="total-calc">-->
+    <!--      <div class="card-border">-->
+    <!--        <h2>Total Amount: {{calculation?.grandTotal ?? 0 | number: '' : 'bn'}}</h2>-->
+    <!--      </div>-->
+    <!--    </div>-->
+
+    <div
+      class="container filter-area">
+      <div
+        class="left"
+        style="margin-bottom: 10px"
+        *ngIf="(!isDefaultFilter && (filter || activeSort)) || isCategoryFilter"
+      >
+        <div>
+          <button mat-stroked-button (click)="onRemoveAllQuery()">
+            <mat-icon>close</mat-icon>
+            Clear FilterData
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-area" *ngIf="selectedIds && selectedIds.length">
+      <div class="delete-area">
+        <button
+          *ngIf="checkDeletePermission"
+          mat-stroked-button
+          color="warn"
+          (click)="openConfirmDialog('delete')"
+          matTooltip="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <app-no-content
+      *ngIf="!isLoading && !reportsData.length"
+      [matIcon]="'info'"
+      title="No data Found!"
+    ></app-no-content>
+
+    <div>
+            <div class="header">
+              <h2 *ngIf="isDefaultFilter">{{ today | date }} , {{getDay(today)}}</h2>
+              <h2 *ngIf="!isDefaultFilter">
+                {{(dataFormDateRange.value.start | date) === (dataFormDateRange.value.end | date) ? (dataFormDateRange.value.start | date) : (dataFormDateRange.value.start | date) + ' -' + (dataFormDateRange.value.end | date)}}
+              </h2>
+            </div>
+      <div class="container">
+        <div class="table-responsive">
+          <table *ngIf="reportsData.length" #dataTable id="reports-sale-list">
+            <tr class="table-row">
+              <th>Item</th>
+              <th>Imei</th>
+              <th>Sale Time</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Cost</th>
+              <th>Profit</th>
+              <th>Notes</th>
+            </tr>
+            <tr *ngFor="let data of reportsData;" class="table-hover">
+              <td>{{ data?.productName }} ({{data?.category}})</td>
+              <td>{{ data?.imei }}</td>
+              <td>{{ data?.soldTime }}</td>
+              <td>{{ data?.soldQuantity }}</td>
+              <td>{{shopInformation?.currency | currencyIcon}} {{(data?.soldQuantity ) * (data?.salePrice ) | number:'2.2-2'}}</td>
+              <td>{{shopInformation?.currency | currencyIcon}} {{(data?.soldQuantity ) * (data?.purchasePrice ) | number:'2.2-2' }}</td>
+
+              <td>{{shopInformation?.currency | currencyIcon}} {{ data?.profit | number:'2.2-2'}}</td>
+              <td>{{ data?.paymentType ?? '-' }}</td>
+            </tr>
+
+            <tr class="table-hover" style="background: #fff5ea">
+              <td></td>
+              <td style="font-weight: bold">Total({{shopInformation?.currency | currencyIcon}})</td>
+
+              <td></td>
+              <td></td>
+              <td style="font-weight: bold">
+                {{ shopInformation?.currency | currencyIcon }} {{ totalPrice | number : "" : "bn" || "-" }}
+              </td>
+              <td>
+
+              </td>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-table-print-category *ngIf="categoryReportsData && isCategoryFilter" [isCategoryFilter]="isCategoryFilter"   [categoryReportsData]="categoryReportsData" [processedData]="processedData" [allRepair]="allRepair" [payouts]="allExpense" [multiPaymentReport]="multiPaymentReport"  [shopInformation]="shopInformation" [dataFormDateRange]="dataFormDateRange"  [isDefaultFilter]="isDefaultFilter"style="visibility: hidden"  id="section-pos-print1" ></app-table-print-category>
+
+<app-table-print *ngIf="expenses && ! isCategoryFilter || reportsData && !isCategoryFilter" [sellerName]="sellerName" [isPayout]="isPayout" [payouts]="allExpense" [allRepair]="allRepair" [products]="reportsData" [multiPaymentReport]="multiPaymentReport" [shopInformation]="shopInformation" [dataFormDateRange]="dataFormDateRange" [isDefaultFilter]="isDefaultFilter" style="visibility: hidden"  id="section-pos-print" ></app-table-print>
+
+
+<!-- TEMPLATE NGX SPINNER-->
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.3)"
+  size="medium"
+  color="#fff"
+  type="ball-scale-pulse"
+  [fullScreen]="true"
+>
+  <p style="color: white">Loading...</p>
+</ngx-spinner>

@@ -1,0 +1,46 @@
+<div class="gap-mid"></div>
+
+
+<input [(ngModel)]="printCount">
+
+<button mat-raised-button (click)="onGenerate()">Generate</button>
+<button mat-raised-button (click)="onClear()">Clear</button>
+
+<button (click)="onPrintConfirm()"
+        mat-raised-button
+        printSectionId="print-section-barcode"
+        ngxPrint
+        [useExistingCss]="true">
+  <mat-icon aria-label="Example icon-button with a heart icon">print</mat-icon>
+  Print
+</button>
+
+<div class="gap-small"></div>
+
+
+
+<div id="print-section-barcode">
+  <div class="area" *ngFor="let i of loop">
+    <div class="name">
+      <p>{{product?.name.length > 20 ? ((product?.name | slice: 0: 20) + '..') : product?.name}}</p>
+    </div>
+    <ngx-barcode6
+      [bc-value]="product?.sku ? product?.sku : product?.productId"
+      [bc-height]="18"
+      [bc-width]="1.4"
+      bc-font-size="10"
+      bc-margin-top="10"
+      bc-text-margin="0"
+      [bc-display-value]="true"
+    >
+    </ngx-barcode6>
+
+
+    <div class="bottom">
+      <h5>TK: {{product?.salePrice}}</h5>
+      <p>Imported by Mosimosi Pos</p>
+    </div>
+  </div>
+</div>
+
+

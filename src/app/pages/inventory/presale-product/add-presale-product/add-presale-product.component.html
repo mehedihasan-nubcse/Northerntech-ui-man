@@ -1,0 +1,259 @@
+
+<section class="add-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Presale Product {{id ? 'Update' : 'Add'}}</h4>
+    </div>
+  </div>
+  <div class="checkbox" *ngIf="!id">
+    <mat-checkbox [(ngModel)]="preventFormReset" (change)="onCheckResetForm()" color="primary">Prevent Form Reset
+    </mat-checkbox>
+  </div>
+</section>
+
+
+<section class="from-section">
+
+
+  <form #formElement="ngForm" [formGroup]="dataForm" (ngSubmit)="onSubmit()" class="area-border">
+
+    <div class="grid">
+      <div class="from form-flex">
+        <app-vendor-search-field style="width: 100%" placeholder="Select vendor" (onSelect)="onSelectVendorList($event)"
+                                 [data]="vendor ? vendor : null">
+        </app-vendor-search-field>
+        <div class="add-icon">
+          <a (click)="onToggle('vendor')"
+             [class]="vendorForm ? 'active' : ''">
+            <img [src]="
+                vendorForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+        </div>
+      </div>
+
+      <div class="from">
+        <mat-label>Active</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="status" required placeholder="Active status">
+            <mat-option *ngFor="let data of dataBoolean" [value]="data.value">
+              {{data.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>Purchase Date</mat-label>
+        <mat-form-field appearance="outline" (click)="picker.open()">
+          <input formControlName="dateString"
+                 matInput
+                 readonly
+                 [matDatepicker]="picker"
+                 required
+                 placeholder="Choose Date"
+                 [max]="today"/>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          <mat-error>This field is required.</mat-error>
+        </mat-form-field>
+      </div>
+
+    </div>
+
+    <div style="margin-bottom: 20px" *ngIf="vendorForm">
+      <app-vendor-add (onAddData)="onAddNewVendor($event)"></app-vendor-add>
+    </div> <!-- END! Vendor Input Form Component -->
+
+    <div class="grid">
+      <div class="from">
+        <mat-label>Product Name *</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="name" matInput placeholder="Enter name" required/>
+        </mat-form-field>
+      </div>
+
+      <div class="from form-flex">
+        <div style="width: 100%;">
+          <mat-label>Category</mat-label>
+          <mat-form-field appearance="outline">
+            <mat-select formControlName="category" placeholder="Choose Category">
+              <mat-option *ngFor="let data of categories" [value]="data._id">
+                {{data.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="add-icon">
+          <a (click)="onToggle('category')"
+             [class]="categoryForm ? 'active' : ''">
+            <img [src]="
+                categoryForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+        </div>
+      </div>
+
+      <div class="from">
+        <mat-label>Attribute</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="attribute" placeholder="Choose Attribute">
+            <mat-option *ngFor="let data of attributes" [value]="data._id">
+              {{data.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="from form-flex">
+        <div style="width: 100%;">
+          <mat-label>Color</mat-label>
+          <mat-form-field appearance="outline">
+            <mat-select formControlName="colors" placeholder="Choose color">
+              <mat-option *ngFor="let data of colors" [value]="data._id">
+                {{data.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="add-icon">
+          <a (click)="onToggle('color')"
+             [class]="colorForm ? 'active' : ''">
+            <img [src]="
+                colorForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px" *ngIf="categoryForm">
+      <app-category-add (onAddData)="onAddNewCategory($event)"></app-category-add>
+    </div> <!-- END! Category Input Form Component -->
+
+    <div style="margin-bottom: 20px" *ngIf="colorForm">
+      <app-color-add (onAddData)="onAddNewColor($event)"></app-color-add>
+    </div> <!-- END! Color Input Form Component -->
+
+    <div class="grid">
+      <div class="from form-flex">
+        <div style="width: 100%;">
+          <mat-label>Size</mat-label>
+          <mat-form-field appearance="outline">
+            <mat-select formControlName="sizes" placeholder="Choose size">
+              <mat-option *ngFor="let data of sizes" [value]="data._id">
+                {{data.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="add-icon">
+          <a (click)="onToggle('size')"
+             [class]="sizeForm ? 'active' : ''">
+            <img [src]="
+                sizeForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+        </div>
+      </div>
+
+      <div [class]="id ? 'quantity-row': '' " class="from">
+
+        <div [class]="id ? 'from-qty': '' ">
+          <mat-label> {{id ? 'Existing Quantity *' : 'Quantity *'}}</mat-label>
+          <mat-form-field appearance="outline">
+            <input formControlName="quantity" [readonly]="id" placeholder="Enter quantity" type="number"
+                   required matInput digitOnly [allowNegatives]="true"/>
+          </mat-form-field>
+        </div>
+        <div class="from-qty" *ngIf="id">
+          <mat-label> {{id ? 'New Quantity *' : 'New Quantity *'}}</mat-label>
+          <mat-form-field appearance="outline">
+            <input formControlName="newQuantity" placeholder="Enter quantity" type="number"
+                   matInput digitOnly [allowNegatives]="true"/>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+      <div class="from">
+        <mat-label>Purchase Price *</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="purchasePrice" placeholder="Enter purchase price" type="number" matInput required
+                 digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true" allowNegatives="true"/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Sale Price *</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="salePrice" placeholder="Enter sale price" matInput required digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true" type="number"
+                 allowNegatives="true"/>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div style="margin-bottom: 20px" *ngIf="sizeForm">
+      <app-size-add (onAddData)="onAddNewSize($event)"></app-size-add>
+    </div> <!-- END! Size Input Form Component -->
+
+
+    <div class="grid">
+      <div class="from">
+        <mat-label>Code No</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="sku" matInput placeholder="Enter code no"/>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>Model</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="model" matInput placeholder="Enter model"/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Others</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="others" matInput placeholder="Enter others information.."/>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="grid">
+
+      <div class="from">
+        <mat-label>Currency</mat-label>
+        <mat-form-field appearance="outline">
+          <mat-select formControlName="currency" placeholder="Choose currency">
+            <mat-option [value]="null">
+              None
+            </mat-option>
+            <mat-option *ngFor="let data of currencyTypes" [value]="data.value">
+              {{data.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </div>
+
+
+    <br>
+    <div class="btn">
+      <button *ngIf="!isLoading" mat-raised-button type="submit" class="btn-submit">{{id ? 'Update' : 'Submit'}} </button>
+      <button *ngIf="isLoading" mat-raised-button type="button" class="btn-submit" disabled>Please wait...</button>
+      <button  [routerLink]="id ? '../../product-list' : '../product-list'" mat-raised-button class="btn-submit color">Go Back</button>
+    </div>
+  </form>
+</section>
+
+<!-- TEMPLATE NGX SPINNER-->
+<ngx-spinner bdColor="rgba(0,0,0,0.3)" size="medium" color="#fff" type="ball-scale-pulse" [fullScreen]="true">
+  <p style="color: white"> Loading... </p>
+</ngx-spinner>

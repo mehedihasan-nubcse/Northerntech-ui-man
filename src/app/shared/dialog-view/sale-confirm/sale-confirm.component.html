@@ -1,0 +1,78 @@
+
+
+<div class="dialog-container">
+
+<!--  <div class="close">-->
+<!--    <button mat-icon-button type="button" (click)="onClose('cancel')">-->
+<!--      <mat-icon>close</mat-icon>-->
+<!--    </button>-->
+<!--  </div>-->
+
+
+  <div class="top-header">
+    <div class="title">
+      <mat-icon>info</mat-icon>
+      <h2> Confirmation!</h2>
+
+    </div>
+  </div> <!-- END Input Form Header -->
+
+
+  <div class="main">
+    <div class="customer-info" *ngIf="sale?.customer">
+      <h5>Customer Info:</h5>
+      <div class="line"></div>
+      <p><span>Name</span>: {{sale?.customer?.name}}, <span>Phone No</span>: {{sale?.customer?.phone}}</p>
+    </div>
+
+
+    <div class="table-responsive">
+      <table>
+        <tr class="table-row">
+          <th>Product Name</th>
+          <th>QTY</th>
+          <th>Price</th>
+        </tr>
+        <tr *ngFor="let product of sale?.products">
+          <td>{{product?.name}} {{product?.saleType === 'Return' ? '(Returned)' : ''}}</td>
+          <td>{{product?.soldQuantity}}</td>
+          <td>{{shopInformation?.currency | currencyIcon}}{{product?.saleType === 'Return' ? '-' : ''}}{{product?.salePrice}}</td>
+        </tr>
+      </table>
+      <div class="table">
+        <table class="total-order">
+          <tr>
+            <td>Sub Total</td>
+            <td class="number-color"> {{shopInformation?.currency | currencyIcon}}{{sale?.subTotal | number: '' : 'bn'}}</td>
+          </tr>
+          <tr *ngIf="type === 'sale' || type == 'pre-sale'">
+            <td>Discount</td>
+            <td class="number-color"> {{shopInformation?.currency | currencyIcon}}{{sale?.discount | number: '' : 'bn'}}</td>
+          </tr>
+          <tr *ngIf="type === 'sale-return'">
+            <td>Charge</td>
+            <td class="number-color"> {{shopInformation?.currency | currencyIcon}}{{sale?.charge | number: '' : 'bn'}}</td>
+          </tr>
+          <tr>
+            <td class="total">Grand Total</td>
+            <td *ngIf="type === 'sale-return'" class="number-color">{{shopInformation?.currency | currencyIcon}}{{sale?.grandTotal | number: '' : 'bn'}}</td>
+            <td *ngIf="type === 'sale' || type == 'pre-sale'" class="number-color">{{shopInformation?.currency | currencyIcon}}{{sale?.total | number: '' : 'bn'}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="button-area">
+<!--      <button #btnConfirm mat-raised-button color="primary" (click)="onClose('print')" type="button">-->
+<!--        <mat-icon>print</mat-icon>-->
+<!--        Confirm & Print-->
+<!--      </button>-->
+      <button mat-raised-button color="accent" (click)="onClose('confirm')" type="button">
+        <mat-icon>done</mat-icon>
+        Confirm
+      </button>
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,446 @@
+<section class="add-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>{{id ? "Edit Sale " : "New Sale"}}</h4>
+      <!-- <h6>{{id?"Update ":"Add"}}Sales</h6> -->
+    </div>
+  </div>
+</section>
+
+<section
+  id="new-sale-section"
+  class="from-section">
+  <div class="area-border">
+    <div class="grid">
+      <div class="from form-1"
+           *ngIf="!id"
+      >
+        <app-customer-search-field
+          (onSelect)="onSelectCustomerList($event)"
+        ></app-customer-search-field>
+
+        <div class="add-icon">
+          <a
+
+            (click)="customerInfoToggle()"
+            [class]="customerInfo ? 'active' : ''"
+          ><img
+            [src]="
+                customerInfo
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              "
+            alt="img"
+          /></a>
+        </div>
+      </div>
+      <div class="from">
+        <mat-label>Sale Date</mat-label>
+        <mat-form-field appearance="outline">
+          <input  matInput [matDatepicker]="picker" placeholder="DD-MM-YYYY"
+                 [(ngModel)]="soldDate"
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <form
+      [style.display]="customer || customerInfo ? 'grid' : 'none'"
+      #formElement="ngForm"
+      [formGroup]="dataForm"
+      class="grid"
+      style="margin-bottom: 20px"
+    >
+      <div class="from">
+        <mat-label>Customer Name</mat-label>
+        <mat-form-field appearance="outline" class="form-field">
+          <input formControlName="name" matInput/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Customer Phone No *</mat-label>
+        <mat-form-field appearance="outline" class="form-field">
+          <input formControlName="phone" matInput type="text"/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Customer Address</mat-label>
+        <mat-form-field appearance="outline" class="form-field">
+          <input formControlName="address" matInput/>
+          <mat-error>This field is required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-form-field appearance="outline" class="mat-date-input-field">
+          <mat-label>Birthdate(Own/Favourite Person)</mat-label>
+          <input matInput [matDatepicker]="picker2" formControlName="birthdate">
+          <mat-datepicker-toggle [for]="picker2"></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </form>
+
+    <app-product-search-filed
+
+      (onSelect)="onSelectProduct($event)">
+    </app-product-search-filed>
+
+
+    <div class="container" *ngIf="products.length>0">
+      <div class="table-responsive">
+        <table>
+          <thead>
+          <tr class="table-row">
+            <th>Product Name</th>
+            <th>Av. Quantity</th>
+            <th *ngIf="!isViewMode">Quantity</th>
+            <th *ngIf="isViewMode">Selling QTY</th>
+            <th>Sales Price(৳)</th>
+<!--            <th>New Sales Price($)</th>-->
+            <th>Unit Dis.</th>
+            <th>Total Dis.</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of products; let i = index">
+            <td class="productimage">
+              <a class="product-text">{{utilsService.getProductName(data)}} {{data?.saleType === 'Return' ? '(Returned)' : ''}}</a>
+              <a  *ngIf="data?.imei" class="product-text">IEMI: {{data?.imei}}</a>
+              <a class="product-text">Category: {{data?.category.name}} </a>
+<!--              <a class="product-text">Supplier: {{data?.vendor?.name}} </a>-->
+
+            </td>
+            <td>{{ data?.quantity }}</td>
+            <td *ngIf="isViewMode">{{ data?.soldQuantity }}</td>
+            <td *ngIf="!isViewMode">
+              <div class="quantity">
+                <div>
+                  <button type="button" (click)="decrementQuantity(i)">
+                    <i class="fa fa-minus"></i>
+                  </button>
+                </div>
+                <div>
+                  <input digitOnly [max]="data?.quantity" [(ngModel)]="data.soldQuantity" type="text"
+                         value="{{ data?.soldQuantity }}"/>
+                </div>
+                <div>
+                  <button type="button" (click)="incrementQuantity(i, data)">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </td>
+<!--            <td>{{ data?.salePrice - discountAmount | decimal}}</td>-->
+<!--            <td>{{ salePrice(data?.salePrice) | decimal}}</td>-->
+            <td>
+<!--             <span style="border: 1px solid #0f89d3;padding: 10px;border-radius: 5px; margin-bottom: 20px; display: inline-block;"> {{data.salePrice}}</span>-->
+              <div class="from" >
+                <div class="price-area">
+                  <div class="input-price">
+                    <label>৳</label>
+                    <input
+                      type="number"
+                      placeholder="Sale Price"
+                      digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true"
+                      [(ngModel)]="data.salePrice"
+                      (input)="onDiscountChange()"
+                    />
+                  </div>
+                </div>
+
+<!--                <mat-form-field appearance="outline" style="width: 150px">-->
+<!--                  <mat-label style="padding-right: 5px">$</mat-label>-->
+<!--                  <input-->
+<!--                    matInput-->
+<!--                    type="number"-->
+<!--                    placeholder="Sale Price"-->
+<!--                    digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true"-->
+<!--                    [(ngModel)]="data.salePrice"-->
+<!--                    (input)="onDiscountChange()"-->
+<!--                  />-->
+<!--                </mat-form-field>-->
+              </div>
+            </td>
+            <td>
+              <div class="from" >
+                <!--                <mat-label>Discount</mat-label>-->
+                <mat-form-field appearance="outline" style="width: 150px">
+                  <input
+                    matInput
+                    type="number"
+                    placeholder="Discount per unit"
+                    digitOnly
+                    pattern="^\d+(\.\d{1,2})?$"
+                    [decimal]="true"
+                    [(ngModel)]="data.discountAmount"
+                    (input)="onDiscountChange()"
+                  />
+
+
+                </mat-form-field>
+              </div>
+            </td>
+            <td>{{ ((data?.discountAmount ?? 0) * (data?.soldQuantity)) | decimal}}</td>
+            <td>{{data?.saleType === 'Return' ? '-' : ''}}{{ ((data?.salePrice * data.soldQuantity) - data.discountAmount ?? 0)  | decimal}}</td>
+
+            <td>
+              <div class="delete-area">
+                <button
+                  [disabled]="isViewMode"
+                  mat-stroked-button
+                  color="warn"
+                  matTooltip="Delete"
+                  (click)="deleteProduct(i)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <div class="grid1">
+      <div class="from">
+      <div class="from from-content">
+<!--      <div class="form-row">-->
+<!--        <div class="from" style="width: 120px;">-->
+<!--          <mat-label>Discount Type</mat-label>-->
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-select [(ngModel)]="discountType">-->
+<!--              <mat-option [value]="null">-->
+<!--                None-->
+<!--              </mat-option>-->
+<!--              <mat-option *ngFor="let data of discountTypes" [value]="data.value">-->
+<!--                {{data.viewValue}}-->
+<!--              </mat-option>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
+<!--        </div>-->
+
+<!--        <div class="from">-->
+<!--          <mat-label>Discount</mat-label>-->
+<!--          <mat-form-field appearance="outline">-->
+<!--            <input-->
+<!--              matInput-->
+<!--              type="number"-->
+<!--              digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true"-->
+<!--              [(ngModel)]="discountAmount"/>-->
+<!--          </mat-form-field>-->
+<!--        </div>-->
+
+<!--      </div>-->
+       <div class="from form-data">
+<!--         <div class="from">-->
+<!--           <mat-label>GST</mat-label>-->
+<!--           <mat-form-field appearance="outline">-->
+<!--             <input-->
+<!--               digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true"-->
+<!--               matInput-->
+<!--               type="number"-->
+<!--               [(ngModel)]="vat"/>-->
+<!--           </mat-form-field>-->
+<!--         </div>-->
+
+<!--         <div class="from down1" >-->
+<!--           <mat-label class="ricieveDesign">Select Payment Type</mat-label>-->
+<!--           <mat-form-field appearance="outline">-->
+<!--             <mat-select [(ngModel)]="paymentType" required [placeholder]="paymentType"-->
+<!--                         (ngModelChange)="onPaymentTypeChanged($event)">-->
+<!--               <mat-option *ngFor="let data of paymentTypes" [value]="data.value"> {{data.viewValue}}</mat-option>-->
+<!--               &lt;!&ndash;              <mat-option value="bkash"> Card</mat-option>&ndash;&gt;-->
+<!--               &lt;!&ndash;              <mat-option value="mobile-banking"> Mobile Banking</mat-option>&ndash;&gt;-->
+<!--               &lt;!&ndash;              <mat-option value="banking"> Banking</mat-option>&ndash;&gt;-->
+<!--             </mat-select>-->
+<!--             <mat-error>This field is required.</mat-error>-->
+<!--           </mat-form-field>-->
+<!--         </div>-->
+<!--         <div class="from ">-->
+<!--           <mat-label>Point Withdraw</mat-label>-->
+<!--           <mat-form-field appearance="outline">-->
+<!--             &lt;!&ndash; <mat-label>Name</mat-label> &ndash;&gt;-->
+<!--             <input-->
+<!--               matInput-->
+<!--               type="number"-->
+<!--               [(ngModel)]="usePoints"-->
+<!--               (ngModelChange)="onChangeWithdrawPoints($event)"-->
+<!--             />-->
+<!--           </mat-form-field>-->
+<!--         </div>-->
+       </div>
+      </div>
+
+
+      <div class="from from-content">
+
+        <div class="from form-data">
+          <p style="margin-bottom: 8px; font-weight: bold" *ngIf="multiPayment.length">Collect Form Customer</p>
+          <div class="multi-pay">
+
+            <div class="m-form" *ngFor="let data of multiPayment ; let i = index">
+              <mat-label class="ricieveDesign">{{data.name | titlecase}} *</mat-label>
+              <mat-form-field appearance="outline">
+                <input required digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true" matInput type="number" [(ngModel)]="data.amount"/>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="from" style="width: 250px;">
+            <div class="from down1">
+              <mat-label class="ricieveDesign">Return to Customer</mat-label>
+              <mat-form-field appearance="outline">
+                <!-- <mat-label>Name</mat-label> -->
+                <input matInput type="text" [value]="receivedFromCustomer > 0 ? (receivedFromCustomer - grandTotal) : 0 | number : '': 'bn'"
+                       readonly="true"/>
+              </mat-form-field>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+
+
+        <div class="from">
+          <div class="from down1">
+            <div class="from down1">
+              <mat-form-field appearance="outline" style="width: 380px;">
+                <mat-label class="ricieveDesign">Note</mat-label>
+                <textarea matInput [(ngModel)]="note"></textarea>
+              </mat-form-field>
+            </div>
+          </div>
+        </div>
+
+        <div class="from from-content">
+          <div class="form"></div>
+         <div class="form-data">
+           <div class="form"></div>
+           <div class="form">
+             <form class="btn farm-btn" *ngIf="checkPaymentTypeAndGrandTotal">
+               <button
+                 (window:keypress)="onEnterEvent($event, 'submit')"
+                 *ngIf="!isViewMode && !isLoading"
+                 mat-raised-button
+                 type="submit"
+                 (click)="onSubmit()"
+                 class="btn-submit">
+                 {{ id ? "Update" : "Submit" }}</button>
+
+               <button
+                 style="margin-right: 8px;"
+                 *ngIf="id"
+                 (click)="onPrint()"
+                 type="button"
+                 color="accent"
+                 mat-raised-button>
+                 <mat-icon>print</mat-icon> Print
+               </button>
+
+               <button
+                 style="margin-right: 8px;"
+                 *ngIf="isLoading"
+                 disabled
+                 type="button"
+                 mat-raised-button>
+                 Please Wait...
+               </button>
+
+               <button
+                 type="button"
+                 routerLink="/sales/sales-list"
+                 mat-raised-button
+                 class="btn-submit color"
+               >
+                 Cancel
+               </button>
+             </form>
+           </div>
+         </div>
+        </div>
+
+        <div class="grid1">
+          <div class="from payment-btn">
+            <button (click)="onTabClick(data.value)"
+                    [class.active]="isActive(data.value)"
+                    class="tab-link"  *ngFor="let data of paymentTypes" >
+              {{data.viewValue}}
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="from">
+<!--        <div *ngIf="!sale" class="from point-filed">-->
+<!--          Your points : {{customer?.userPoints ?? 0}}-->
+<!--        </div>-->
+
+        <table class="total-order calculation-area">
+          <tr>
+            <td>Sub Total</td>
+            <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ subTotal | number:'':'bn' }}</td>
+          </tr>
+          <tr>
+            <td>Discount</td>
+            <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ discount ?? 0 | number:'':'bn' }}</td>
+          </tr>
+<!--          <tr>-->
+<!--            <td>GST</td>-->
+<!--            <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ vat ?? 0 | number:'':'bn' }}</td>-->
+<!--          </tr>-->
+          <tr *ngIf="visaCharge">
+            <td>Visa/Master Extra Charge</td>
+            <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{visaCharge}}</td>
+          </tr>
+<!--          <tr>-->
+<!--            <td>Points Discount</td>-->
+<!--            <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ pointsDiscount ?? 0 | number:'':'bn' }}</td>-->
+<!--          </tr>-->
+          <tr>
+            <td class="total">Grand Total</td>
+            <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ grandTotal | number:'':'bn' }}</td>
+          </tr>
+
+<!--          <tr class="profit-tag" *ngIf="totalProfit > 0">-->
+<!--            <td class="total profit-tag-td " >Profit </td>-->
+<!--            <td class="number-color profit-tag-td">{{shopInformation?.currency | currencyIcon}} {{ totalProfit | number:'':'bn' }}</td>-->
+<!--          </tr>-->
+
+<!--          <tr class="profit-tag-Red" *ngIf="totalProfit<0">-->
+<!--            <td class="total profit-tag-td " >Loss </td>-->
+<!--            <td class="number-color profit-tag-td">{{shopInformation?.currency | currencyIcon}} {{ totalProfit | number:'':'bn' }}</td>-->
+<!--          </tr>-->
+        </table>
+      </div>
+    </div>
+
+    <!--    (keyup.enter)="onSubmit()"-->
+    <!--    (click)="onSubmit()"-->
+    <!--    (keydown)="onEnterEvent($event)"-->
+
+
+  </div>
+
+  <div class="action-btn-bottom">
+    <a style="background: #666666; width: 200px; margin-top: 10px;" routerLink="/inventory/product-list" class="a-back">
+      <i class="fas fa-arrow-left"></i>
+      <span>Back to Inventory</span>
+    </a>
+  </div>
+</section>
+
+<!-- Print Area -->
+<!--style="visibility: hidden"-->
+<app-print-sale-pos style="visibility: hidden" id="section-pos-print" [data]="id ? sale: saleData" [shopInformation]="shopInformation"></app-print-sale-pos>

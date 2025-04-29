@@ -1,0 +1,14 @@
+@import "/src/theme/exports/_add-from.scss";
+
+.from-section {
+  width: 100%;
+}
+
+.btn {
+  button {
+    padding: 2px;
+  }
+  button[type="submit"] {
+    background: #ea5455;
+  }
+}

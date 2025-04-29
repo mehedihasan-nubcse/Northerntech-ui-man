@@ -1,0 +1,244 @@
+<!--<div  id="payment-type-list-print-table" >-->
+<!--  <table >-->
+<!--    <tr>-->
+<!--      <th>Name</th>-->
+<!--      <th>Purchase Price</th>-->
+<!--      <th>Sales Price</th>-->
+<!--    </tr>-->
+<!--    <tr *ngFor="let data of products">-->
+<!--      <td>-->
+<!--        {{ data?.name }}-->
+<!--      </td>-->
+<!--      <td>-->
+<!--        {{ data?.purchasePrice}}-->
+<!--      </td>-->
+
+<!--      <td>-->
+<!--        {{ data?.salePrice}}-->
+<!--      </td>-->
+<!--    </tr>-->
+<!--  </table>-->
+<!--</div>-->
+
+
+
+
+<div class="my-table" >
+
+  <div class="info">
+<!--    <h3>Sales Receipts</h3>-->
+    <p *ngIf="shopInformation?.siteName"><b>{{shopInformation?.siteName}}</b></p>
+<!--    <p *ngIf="shopInformation?.uenNo"><b>UEN NO:</b> {{shopInformation?.uenNo}}</p>-->
+<!--    <p *ngIf="shopInformation?.addresses[0]?.value" style="font-size: 11px"><b>Address:</b> {{shopInformation?.addresses[0]?.value}}</p>-->
+<!--    <p *ngIf="shopInformation?.phones[0]?.value" style="font-size: 11px"><b>TEL:</b> {{shopInformation?.phones[0]?.value}}</p>-->
+<!--    <p *ngIf="data?.customerName"><b>Customer Name:</b> {{data?.customerName ?? '-'}}</p>-->
+<!--    <p *ngIf="data?.customer?.phoneNo"><b>Phone No:</b> {{data?.phoneNo ?? '-'}}</p>-->
+<!--    <p><b>Date Time:</b> {{data?.dateString ?? '-'}} {{data?.createTime ?? '-'}}</p>-->
+<!--    <p><b>Pay Buy:</b> {{data?.payby ?? '-'}}</p>-->
+  </div> <!-- END! Top Info -->
+
+  <div>
+    <p  style="font-size: 14px">Date: {{myDate | date}}</p>
+  </div>
+
+  <table style="
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 18px;"
+  >
+    <tr>
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Name</th>
+
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">IMEI</th>
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Color</th>
+
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Storage/Others</th>
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Price</th>
+
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Customer</th>
+
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">Phone</th>
+
+      <th  style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">NRIC</th>
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">Storage/Others</th>-->
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">Purchase Price</th>-->
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">Sales Price</th>-->
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">Qty</th>-->
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">T P.P</th>-->
+
+
+<!--      <th  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">Total Amount</th>-->
+<!--    </tr>-->
+
+
+
+    <tr *ngFor="let data of products">
+      <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+        {{ data?.name }}
+      </td>
+
+<!--      <td style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{  data?.category?.name || "-" }}-->
+<!--      </td>-->
+    <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+      {{  data?.imei || "-" }}
+    </td>
+
+      <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+        {{  data?.colors?.name || "-" }}
+      </td>
+
+      <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+        {{ data?.sizes?.name || "-" }}
+      </td>
+
+    <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+        {{ data?.purchasePrice || "-" }}
+      </td>
+
+    <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+      {{ data?.customerName || "-" }}
+    </td>
+
+
+    <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+      {{ data?.phoneNo || "-" }}
+    </td>
+
+    <td style=" border: 1px solid #656565;
+    text-align: center;
+    padding: 5px;
+    font-size: 18px;">
+      {{data?.nric ?? '-' }}
+    </td>
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{ data?.purchasePrice | number : "" : "bn" || "-" }}-->
+<!--      </td>-->
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{ data?.salePrice | number : "" : "bn" || "-" }}-->
+<!--      </td>-->
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{ data?.quantity || "0" }}-->
+<!--      </td>-->
+
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{data?.purchasePrice * data?.quantity | number : "" : "bn" || "-"}}-->
+<!--      </td>-->
+<!--      <td  style=" border: 1px solid #656565;-->
+<!--    text-align: center;-->
+<!--    padding: 5px;-->
+<!--    font-size: 18px;">-->
+<!--        {{ data?.salePrice * data?.quantity | number : "" : "bn" || "-" }}-->
+<!--      </td>-->
+    </tr>
+
+    <tr class="table-hover" style="background: #fff5ea">
+      <!--            <td></td>-->
+      <td style="font-weight: bold">Total:</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td style="font-weight: bold">
+        {{ getTotalPurchasePrice() | number : "" : "bn"}}
+      </td>
+      <td></td>
+      <td></td>
+      <td></td>
+
+      <!--            <td></td>-->
+    </tr>
+  </table>
+</div>
+
+

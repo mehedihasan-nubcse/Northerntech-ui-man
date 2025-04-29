@@ -1,0 +1,52 @@
+<div class="gap-mid"></div>
+
+
+<input [(ngModel)]="printCount">
+<button mat-raised-button (click)="onGenerate()">Generate</button>
+<button mat-raised-button (click)="onClear()">Clear</button>
+
+<!--<button (click)="onPrintConfirm()"-->
+<!--        mat-raised-button-->
+<!--        printSectionId="section-pos-print"-->
+<!--        ngxPrint-->
+<!--        [useExistingCss]="true">-->
+<!--  <mat-icon>print</mat-icon>-->
+<!--  Print-->
+<!--</button>-->
+
+<button mat-raised-button color="primary" (click)="onPrint()">Window Print</button>
+
+<div class="gap-small"></div>
+
+
+<div id="section-pos-print">
+  <div class="area" *ngFor="let i of loop">
+    <div class="name">
+      <p class="bp-name">{{product?.name.length > 30 ? ((product?.name | slice: 0: 30) + '..') : product?.name}}</p>
+    </div>
+    <div class="barcode">
+      <ngx-barcode6
+        [bc-value]="product?.sku ? product?.sku : product?.productId"
+        [bc-height]="30"
+        [bc-width]="1.3"
+        bc-font-size="8"
+        bc-margin-top="10"
+        bc-text-margin="0"
+
+      >
+      </ngx-barcode6>
+
+    </div>
+
+    <div class="bottom">
+
+
+<!--        <h5>  <span>{{product?.sku ? product?.sku : product?.productId}}</span>  {{shopInformation?.currency | currencyIcon  }} {{product?.salePrice |  number:'0.2'}}</h5>-->
+        <h5>  <span>{{product?.sku ? product?.sku : product?.productId}}</span> </h5>
+
+
+<!--      <p style="font-size: 8px; font-weight: 500">Mosimosi</p>-->
+    </div>
+  </div>
+</div>
+

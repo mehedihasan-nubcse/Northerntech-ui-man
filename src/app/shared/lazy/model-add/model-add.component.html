@@ -1,0 +1,29 @@
+<section class="from-section">
+  <form #formElement="ngForm" [formGroup]="dataForm" (ngSubmit)="onSubmit()" class="area-border">
+    <div class="grid">
+      <div class="from">
+        <mat-label>Model Name *</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="name" matInput required placeholder="Enter Model"/>
+          <mat-error>This field is required.</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!--      <div class="from">-->
+      <!--        <mat-label>Code</mat-label>-->
+      <!--        <mat-form-field appearance="outline">-->
+      <!--          <input formControlName="code" matInput placeholder="Enter name"/>-->
+      <!--          <mat-error>This field is required.</mat-error>-->
+      <!--        </mat-form-field>-->
+      <!--      </div>-->
+
+    </div> <!-- End! Form Area -->
+
+    <div class="btn">
+      <button *ngIf="!isLoading" mat-raised-button type="submit" class="btn-submit">Submit</button>
+      <button *ngIf="isLoading" mat-raised-button type="button" class="btn-submit" disabled>Please wait...</button>
+    </div> <!-- End! Button Area -->
+  </form> <!-- End! Main Form -->
+</section>
+
+

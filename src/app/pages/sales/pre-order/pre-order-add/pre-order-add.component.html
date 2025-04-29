@@ -1,0 +1,345 @@
+<section class="add-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>{{id ? "Edit Pre Sale " : "New Pre Sale"}}</h4>
+      <!-- <h6>{{id?"Update ":"Add"}}Sales</h6> -->
+    </div>
+  </div>
+</section>
+
+<section
+  class="from-section">
+  <div class="area-border">
+    <div class="grid">
+      <div class="from form-1"
+           *ngIf="!id">
+        <app-customer-search-field
+          (onSelect)="onSelectCustomerList($event)"
+        ></app-customer-search-field>
+
+        <div class="add-icon" *ngIf="!id">
+          <a
+
+            (click)="customerInfoToggle()"
+            [class]="customerInfo ? 'active' : ''"
+          ><img
+            [src]="
+                customerInfo
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              "
+            alt="img"
+          /></a>
+        </div>
+      </div>
+      <div class="from">
+        <mat-label>Sold Date</mat-label>
+        <mat-form-field appearance="outline">
+          <input matInput [matDatepicker]="picker" placeholder="DD-MM-YYYY"
+                 [ngModel]="soldDate"
+                 disabled
+          />
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>Delivery Date</mat-label>
+        <mat-form-field appearance="outline" (click)="picker2.open()">
+          <input readonly matInput [matDatepicker]="picker2" placeholder="DD-MM-YYYY"
+                 [(ngModel)]="deliveryDate" [min]="today"/>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker2"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker2></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <form
+      [style.display]="customer || customerInfo ? 'grid' : 'none'"
+      #formElement="ngForm"
+      [formGroup]="dataForm"
+      class="grid"
+      style="margin-bottom: 20px"
+    >
+      <div class="from">
+        <mat-label>Customer Name</mat-label>
+        <mat-form-field appearance="outline" class="form-field">
+          <input formControlName="name" matInput/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Customer Phone No</mat-label>
+        <mat-form-field appearance="outline" class="form-field">
+          <input formControlName="phone" matInput type="text" maxlength="11"/>
+        </mat-form-field>
+      </div>
+      <div class="from">
+        <mat-label>Customer Address</mat-label>
+        <mat-form-field appearance="outline" class="form-field">
+          <input formControlName="address" matInput/>
+          <mat-error>This field is required</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-form-field appearance="outline" class="mat-date-input-field">
+          <mat-label>Birthdate(Own/Favourite Person)</mat-label>
+          <input matInput [matDatepicker]="picker3" formControlName="birthdate">
+          <mat-datepicker-toggle [for]="picker3"></mat-datepicker-toggle>
+          <mat-datepicker #picker3></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!--      <div class="disable-btn">-->
+      <!--        <button mat-button type="submit" style="background-color: #FE820E;">-->
+      <!--          Add New Customer-->
+      <!--        </button>-->
+      <!--      </div>-->
+    </form>
+
+<!--    <app-product-search-filed *ngIf="!id" (onSelect)="onSelectProduct($event)">-->
+
+<!--    </app-product-search-filed>-->
+
+    <div class="from form-flex">
+      <app-preorder-product-search-filed (onSelect)="onSelectProduct($event)">
+
+      </app-preorder-product-search-filed>
+      <div class="add-icon">
+        <a (click)="onToggle('product')"
+           [class]="productForm ? 'active' : ''">
+          <img [src]="
+                productForm
+                  ? './assets/images/svg/closes.svg'
+                  : './assets/images/svg/plus1.svg'
+              " alt="img"/></a>
+      </div>
+    </div>
+
+    <div class="product-add-component" *ngIf="productForm">
+      <app-add-presale-product></app-add-presale-product>
+    </div>
+
+    <div class="container" *ngIf="products.length>0">
+      <div class="table-responsive">
+        <table>
+          <thead>
+          <tr class="table-row">
+            <th>Product Name</th>
+            <th *ngIf="!isViewMode">Quantity</th>
+            <th *ngIf="isViewMode">Selling QTY</th>
+            <th>Sales Price($)</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of products; let i = index">
+            <td class="productimage">
+              <a class="product-text">{{data.name}}
+                ({{data?.sku ? data?.sku + ',' : ''}}{{data?.model ? data?.model + ',' : ''}}{{data?.others ? data?.others : ''}}
+                )</a>
+            </td>
+            <td *ngIf="isViewMode">{{ data?.soldQuantity }}</td>
+            <td *ngIf="!isViewMode">
+              <div class="quantity">
+                <div>
+                  <button type="button" (click)="decrementQuantity(i)">
+                    <i class="fa fa-minus"></i>
+                  </button>
+                </div>
+                <div>
+                  <input [(ngModel)]="data.soldQuantity" type="text" value="{{ data?.soldQuantity }}"/>
+                </div>
+                <div>
+                  <button type="button" (click)="incrementQuantity(i, data)">
+                    <i class="fa fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+            </td>
+            <td>{{ data?.salePrice }}</td>
+            <td>{{ data?.salePrice * data.soldQuantity }}</td>
+            <td>
+              <div class="delete-area">
+                <button
+                  [disabled]="isViewMode"
+                  mat-stroked-button
+                  color="warn"
+                  matTooltip="Delete"
+                  (click)="deleteProduct(i)"
+                >
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="from down">
+        <mat-label>Advanced Amount</mat-label>
+        <mat-form-field appearance="outline">
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="paidAmount"/>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="form-row">
+        <div class="from" style="width: 120px;">
+          <mat-label>Discount Type</mat-label>
+          <mat-form-field appearance="outline">
+            <mat-select [(ngModel)]="discountType">
+              <mat-option [value]="null">
+                None
+              </mat-option>
+              <mat-option *ngFor="let data of discountTypes" [value]="data.value">
+                {{data.viewValue}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="from">
+          <mat-label>Discount</mat-label>
+          <mat-form-field appearance="outline">
+            <input
+              digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true"
+              matInput
+              type="number"
+              [(ngModel)]="discountAmount"/>
+          </mat-form-field>
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="grid">
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="from down">
+        <mat-label>GST</mat-label>
+        <mat-form-field appearance="outline">
+          <input
+            digitOnly pattern="^\d+(\.\d{1,2})?$" [decimal]="true"
+            matInput
+            type="number"
+            [(ngModel)]="vat"/>
+        </mat-form-field>
+      </div>
+
+
+    </div>
+
+
+    <div class="grid" *ngIf="!preOrder">
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="from down point-filed">
+        Your points : {{customer?.userPoints ?? 0}}
+      </div>
+
+
+    </div>
+
+
+    <div class="grid" *ngIf="!preOrder">
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="from"></div>
+      <div class="from down">
+        <mat-label>Point Withdraw</mat-label>
+        <mat-form-field appearance="outline">
+          <!-- <mat-label>Name</mat-label> -->
+          <input
+            matInput
+            type="number"
+            [(ngModel)]="usePoints"
+            (ngModelChange)="onChangeWithdrawPoints($event)"
+
+          />
+        </mat-form-field>
+      </div>
+
+
+    </div>
+
+
+    <div class="table">
+      <table class="total-order">
+        <tr>
+          <td>Sub Total</td>
+          <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ subTotal | number:'':'bn' }}</td>
+        </tr>
+        <tr>
+          <td>Advanced Amount(-)</td>
+          <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ paidAmount | number:'':'bn' }}</td>
+        </tr>
+        <tr>
+          <td>Discount(-)</td>
+          <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ discount | number:'':'bn' }}</td>
+        </tr>
+        <tr>
+          <td>GST</td>
+          <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ vat | number:'':'bn' }}</td>
+        </tr>
+
+        <tr>
+          <td>Points Discount</td>
+          <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ pointsDiscount | number:'':'bn' }}</td>
+        </tr>
+
+        <tr>
+          <td>Due Amount</td>
+          <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ dueAmount | number:'':'bn' }}</td>
+        </tr>
+
+        <tr>
+          <td class="total">Grand Total</td>
+          <td class="number-color">{{shopInformation?.currency | currencyIcon}}{{ grandTotal | number:'':'bn' }}</td>
+        </tr>
+      </table>
+    </div>
+    <div class="btn">
+      <button
+        *ngIf="!isViewMode"
+        mat-raised-button
+        type="button"
+        class="btn-submit"
+        (click)="onSubmit()"
+      >
+        {{ id ? "Update" : "Submit" }}
+      </button>
+      <button
+        type="button"
+        routerLink="/sales/pre-order-list"
+        mat-raised-button
+        class="btn-submit color"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</section>

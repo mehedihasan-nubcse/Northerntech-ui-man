@@ -1,0 +1,52 @@
+<section class="from-section">
+  <form #formElement="ngForm" [formGroup]="dataForm" (ngSubmit)="onSubmit()" class="area-border">
+    <div class="grid grid-5">
+      <div class="from">
+        <mat-label>Name *</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="name" matInput required placeholder="Enter name"/>
+          <mat-error>This field is required.</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>Company Name</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="company" matInput placeholder="Enter name"/>
+          <mat-error>This field is required.</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>Email</mat-label>
+        <mat-form-field appearance="outline">
+          <input type="email" formControlName="email" matInput placeholder="Enter email">
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>Phone </mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="phone" matInput placeholder="Enter Phone No"/>
+          <mat-error>This field is required.</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="from">
+        <mat-label>Others Number</mat-label>
+        <mat-form-field appearance="outline">
+          <input formControlName="alternateNumber" matInput placeholder="Enter others number"/>
+          <mat-error>This field is required.</mat-error>
+        </mat-form-field>
+      </div>
+
+    </div> <!-- End! Form Area -->
+
+    <div class="btn">
+      <button *ngIf="!isLoading" mat-raised-button type="submit" class="btn-submit">Submit</button>
+      <button *ngIf="isLoading" mat-raised-button type="button" class="btn-submit" disabled>Please wait...</button>
+    </div> <!-- End! Button Area -->
+  </form> <!-- End! Main Form -->
+</section>
+
+

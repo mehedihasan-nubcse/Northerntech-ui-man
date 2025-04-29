@@ -1,0 +1,45 @@
+<div style="position: relative; width: 100%;">
+
+  <div class="header-dialog">
+    <h1 mat-dialog-title>Update Repair Status</h1>
+  </div>
+
+  <form [formGroup]="dataForm" (ngSubmit)="onSubmit()" autocomplete="off" #templateForm="ngForm"
+         >
+
+    <mat-form-field class="form-field w-100" appearance="outline">
+      <mat-label>Repair Status</mat-label>
+      <mat-select formControlName="status" required>
+        <mat-option  value="Pending">Pending</mat-option>
+        <mat-option  value="Delivered">Delivered</mat-option>
+      </mat-select>
+      <mat-error>This field is required</mat-error>
+    </mat-form-field>
+
+    <div class="" style="display: flex;flex-direction: column">
+      <mat-label style="display: inline-block">Delivery Date</mat-label>
+      <mat-form-field appearance="outline">
+        <input
+          formControlName="deliveredDate"
+          matInput
+          [matDatepicker]="picker"
+          required
+          placeholder="Choose Date"
+        />
+        <mat-datepicker-toggle
+          matSuffix
+          [for]="picker"
+        ></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+        <mat-error>This field is required.</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="action">
+      <button type="button" mat-raised-button color="warn" (click)="onCloseDialog(null)">
+        Cancel
+      </button>
+      <button mat-raised-button color="primary" type="submit">{{ 'Update Status' }}</button>
+    </div>
+  </form>
+</div>

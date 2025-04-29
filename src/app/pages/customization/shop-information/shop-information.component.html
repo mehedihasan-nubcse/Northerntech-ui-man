@@ -1,0 +1,181 @@
+
+
+<div style="position: relative">
+
+  <div class="header-dialog">
+<!--    <h1>Currency</h1>-->
+    <h1>Shop Settings</h1>
+  </div>
+
+  <form [formGroup]="dataForm" (ngSubmit)="onSubmit()"
+        fxLayout="column"
+        fxLayoutAlign="space-around center">
+
+    <div class="image-area" style="margin-bottom: 20px; display: flex">
+      <div class="form-img-avatar" matTooltip="Upload Logo" (click)="openGalleryDialog()">
+        <img [src]="pickedImage" alt="">
+      </div>
+
+      <div class="form-img-avatar" matTooltip="Upload Meta Logo" (click)="openGalleryDialog1()">
+        <img [src]="pickedImage1" alt="">
+      </div>
+
+<!--      <div class="form-img-avatar" matTooltip="Upload Footer Logo" (click)="openGalleryDialog2()">-->
+<!--        <img [src]="pickedImage2" alt="">-->
+<!--      </div>-->
+
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Website Name</mat-label>
+      <input formControlName="siteName" matInput placeholder="Enter web site name">
+    </mat-form-field>
+
+<!--    <mat-form-field appearance="outline">-->
+<!--      <mat-label>Meta Title</mat-label>-->
+<!--      <input formControlName="metaTitle" matInput placeholder="Enter web site meta title">-->
+<!--    </mat-form-field>-->
+
+    <mat-form-field appearance="outline">
+      <mat-label>Short Description</mat-label>
+      <input formControlName="shortDescription" matInput placeholder="Enter Short Description">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Shop Number</mat-label>
+      <input formControlName="shopNumber" matInput placeholder="Enter Shop Number">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Currency</mat-label>
+      <mat-select formControlName="currency" placeholder="Choose currency">
+        <mat-option [value]="null">
+          None
+        </mat-option>
+        <mat-option *ngFor="let data of currencyTypes" [value]="data.value">
+          {{data.viewValue}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Sales Report Footer text</mat-label>
+<!--      <input formControlName="footerText" matInput placeholder="Enter your text">-->
+      <textarea formControlName="footerText" matInput placeholder="Enter your text"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>UEN NO</mat-label>
+      <input formControlName="uenNo" matInput placeholder="Enter Uen No">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Print Page Title</mat-label>
+      <input formControlName="sellerName" matInput placeholder="Enter Print Page Title">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Print Payout Page Title</mat-label>
+      <input formControlName="payoutTitle" matInput placeholder="Enter Print Payout Page Title">
+    </mat-form-field>
+
+    <mat-card style="width: 100%; margin-bottom: 15px">
+      <h2>Repair invoice info</h2>
+      <mat-form-field appearance="outline">
+        <mat-label>Shop Name</mat-label>
+        <input formControlName="shopName" matInput placeholder="Enter shop name">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Shop Address</mat-label>
+        <input formControlName="shopAddress" matInput placeholder="Enter Address">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Shop Phone</mat-label>
+        <input formControlName="shopPhoneNo" matInput placeholder="Enter phone">
+      </mat-form-field>
+    </mat-card>
+
+    <div class="form-array-container">
+      <div class="add-form-array-action">
+        <button type="button" mat-raised-button color="primary" (click)="onAddNewShopObject('addresses')">
+          <mat-icon>add</mat-icon>
+          Add New Address
+        </button>
+
+      </div>
+      <div formArrayName="addresses" class="form-array-input">
+        <div class="single-field" *ngFor="let data of addressesDataArray?.controls; let i = index" [formGroupName]="i">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Type Address {{i + 1}}</mat-label>
+            <input formControlName="value" matInput [placeholder]="'Enter Address ' + i + 1">
+          </mat-form-field>
+          <button type="button" mat-mini-fab color="warn" (click)="removeFormArrayField('addresses', i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div> <!-- END ADDRESS FORM ARRAY -->
+
+    <div class="form-array-container">
+      <div class="add-form-array-action">
+        <button type="button" mat-raised-button color="primary" (click)="onAddNewShopObject('emails')">
+          <mat-icon>add</mat-icon>
+          Add New Email
+        </button>
+
+      </div>
+      <div formArrayName="emails" class="form-array-input">
+        <div class="single-field" *ngFor="let data of emailsDataArray?.controls; let i = index" [formGroupName]="i">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Type Email {{i + 1}}</mat-label>
+            <input formControlName="value" matInput [placeholder]="'Enter email ' + i + 1" type="email">
+          </mat-form-field>
+          <button type="button" mat-mini-fab color="warn" (click)="removeFormArrayField('emails', i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div> <!-- END EMAILS FORM ARRAY -->
+
+    <div class="form-array-container">
+      <div class="add-form-array-action">
+        <button type="button" mat-raised-button color="primary" (click)="onAddNewShopObject('phones')">
+          <mat-icon>add</mat-icon>
+          Add New Phone No
+        </button>
+
+      </div>
+      <div formArrayName="phones" class="form-array-input">
+        <div class="single-field" *ngFor="let data of phonesDataArray?.controls; let i = index" [formGroupName]="i">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Type Phone No {{i + 1}}</mat-label>
+            <input formControlName="value" matInput [placeholder]="'Enter phone no ' + i + 1" type="tel">
+          </mat-form-field>
+          <button type="button" mat-mini-fab color="warn" (click)="removeFormArrayField('phones', i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div> <!-- END PHONES FORM ARRAY -->
+
+
+
+    <button class="submit-btn" mat-raised-button color="accent" type="submit">
+      <mat-icon>done</mat-icon>
+      Save Data
+    </button>
+  </form>
+</div>
+
+
+<!-- LOADING TEMPLATE -->
+<ngx-spinner style="width: 100vw; height: 100vh" bdColor="rgba(0,0,0,0.25)" size="medium" color="#fff"
+             type="ball-clip-rotate" [fullScreen]="true"><p style="color: white"> Loading... </p></ngx-spinner>
+
+
+

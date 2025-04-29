@@ -1,0 +1,290 @@
+<section class="page-list">
+  <div class="page-header">
+    <div class="page-title">
+      <h4>Trash Sales LIST</h4>
+      <h6>Manage your sales</h6>
+    </div>
+<!--    <div class="page-btn">-->
+<!--      <div class="page-btn">-->
+<!--        <a routerLink="/sales/new-sales" class="btn btn-added">-->
+<!--          <img src="/assets/images/svg/plus.svg" alt="img" class="me-1"/><span>Sales table</span></a>-->
+<!--      </div>-->
+<!--    </div>-->
+  </div>
+</section> <!-- END Header Area -->
+
+
+<section class="table-section" id="sale-list-table-view">
+  <div class="mat-elevation-z8">
+    <div class="table-top">
+      <div class="search-set">
+        <div class="search-input">
+          <a class="btn btn-searchset"
+          >
+            <mat-icon class="mat-icons">search</mat-icon>
+          </a>
+          <form class="table-search" #searchForm="ngForm">
+            <input
+              type="search"
+              #searchInput
+              name="searchTerm"
+              autocomplete="off"
+              ngModel
+              placeholder="Search by IMEI, Invoice Number..."
+            />
+          </form>
+        </div>
+      </div>
+
+      <div class="date-filter">
+        <mat-form-field
+          class="mat-date-input-field"
+          appearance="outline"
+          (click)="picker.open()"
+        >
+          <mat-label class="filter-date">Filter Date</mat-label>
+          <mat-date-range-input
+            [formGroup]="dataFormDateRange"
+            [rangePicker]="picker"
+            [max]="today"
+          >
+            <input
+              matStartDate
+              formControlName="start"
+              placeholder="Start date"
+              readonly
+            />
+            <input
+              matEndDate
+              formControlName="end"
+              placeholder="End date"
+              readonly
+              (dateChange)="endChangeRegDateRange($event)"
+            />
+          </mat-date-range-input>
+          <mat-datepicker-toggle
+            matSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+
+          <mat-error
+            *ngIf="
+              dataFormDateRange.controls.start.hasError('matStartDateInvalid')
+            "
+          >Invalid start date
+          </mat-error>
+          <mat-error
+            *ngIf="dataFormDateRange.controls.end.hasError('matEndDateInvalid')"
+          >Invalid end date
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="sort">
+        <button mat-raised-button [matMenuTriggerFor]="menuMonth" class="button-style">
+          {{months[activeFilterMonth]?.viewValue || 'Month'}}
+          <mat-icon>keyboard_arrow_down</mat-icon>
+        </button>
+        <mat-menu #menuMonth="matMenu">
+          <button
+            *ngFor="let data of months; let i = index"
+            mat-menu-item
+            (click)="filterData(data.value, i, 'month')"
+            [class.dropdown-active]="activeFilterMonth === i"
+          >
+            {{ data?.viewValue }}
+          </button>
+        </mat-menu>
+      </div>
+
+      <div class="sort">
+        <button mat-raised-button class="button-style" (click)="exportToAllExcel()">
+          Export as Excel
+          <mat-icon>file_download</mat-icon>
+        </button>
+      </div>
+
+    </div> <!-- END Table Top -->
+
+    <!--    <div class="table-top-second">-->
+    <!--      <select id="categoryDropdown">-->
+    <!--        <option value="" disabled selected>Categories</option>-->
+    <!--        <option *ngFor="let data of categories" [value]="data?._id">{{ data?.name }}</option>-->
+    <!--      </select>-->
+    <!--    </div>-->
+
+
+<!--    <div class="total-calc">-->
+<!--      <div class="card-border">-->
+<!--        <h2>Total Amount: {{calculation?.grandTotal ?? 0 | number: '' : 'bn'}}</h2>-->
+<!--      </div>-->
+<!--    </div>-->
+
+    <div
+      class="container filter-area">
+      <div
+        class="left"
+        style="margin-bottom: 10px"
+        *ngIf="!isDefaultFilter && (filter || activeSort)"
+      >
+        <div>
+          <button mat-stroked-button (click)="onRemoveAllQuery()">
+            <mat-icon>close</mat-icon>
+            Clear FilterData
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-area" *ngIf="selectedIds && selectedIds.length">
+      <div class="delete-area">
+        <button
+          *ngIf="checkDeletePermission"
+          mat-stroked-button
+          color="warn"
+          (click)="openConfirmDialog('restore')"
+          matTooltip="Restore"
+        >
+          <mat-icon>undo</mat-icon> Restore
+        </button>
+      </div>
+      <div class="delete-area">
+        <button
+          *ngIf="checkDeletePermission"
+          mat-stroked-button
+          color="warn"
+          (click)="openConfirmDialog('delete')"
+          matTooltip="Delete"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <app-no-content
+      *ngIf="!isLoading && !sales.length"
+      [matIcon]="'info'"
+      title="No data Found!"
+    ></app-no-content>
+
+    <div *ngFor="let data of sales; let i = index">
+      <div class="header">
+        <h2>{{ data?._id | date }} , {{getDay(data?._id)}}</h2>
+      </div>
+      <div class="container">
+        <div class="table-responsive">
+          <table *ngIf="sales.length">
+            <tr class="table-row">
+              <th class="t-checkbox">
+                <mat-checkbox
+                  #matCheckbox
+                  (change)="onAllSelectChange($event, data.data, i)"
+                  class="mat-check"
+                ></mat-checkbox>
+              </th>
+              <th>Invoice ID</th>
+              <!--              <th>Customer Phone No</th>-->
+              <th>Product</th>
+              <th>Category</th>
+              <th>Imei</th>
+              <th>Supplier</th>
+              <th>Sold Date Time</th>
+              <!--              <th>Sold Time</th>-->
+              <th>Sub Total</th>
+              <th>Discount</th>
+              <!--              <th>GST</th>-->
+              <th>Grand Total</th>
+              <th>Payment Methods</th>
+              <th>Note</th>
+<!--              <th>Action</th>-->
+            </tr>
+            <tr *ngFor="let data of data.data; let j = index" class="table-hover" [ngClass]="{ 'row-selected': data.select }">
+              <td class="t-checkbox">
+                <mat-checkbox
+                  class="t-mat-checkbox"
+                  [(ngModel)]="data.select"
+                  (ngModelChange)="onCheckChange($event, j, data._id)"
+                ></mat-checkbox>
+              </td>
+              <td>{{ data?.invoiceNo }}</td>
+              <!--              <td>{{ data?.customer?.phone ?? '-' }}</td>-->
+              <td ><span *ngFor="let d of data.products" style="display: flex;flex-direction: column;">{{ utilsService.getProductName(d)}}-({{d?.soldQuantity}})</span></td>
+              <td ><span *ngFor="let d of data.products" style="display: flex;flex-direction: column;">{{d?.category.name}}</span></td>
+              <td ><span *ngFor="let d of data.products" style="display: flex;flex-direction: column;">{{d?.imei}}</span></td>
+              <td ><span *ngFor="let d of data.products" style="display: flex;flex-direction: column;">{{d?.vendor?.name ?? '-'}}</span></td>
+              <!--              <td>{{ data?.category?.name ?? '-' }}</td>-->
+              <!--              <td>{{ data?.vendor?.name ? (data?.vendor?.name) : '-'}}</td>-->
+              <td>{{ data?.soldDateString ? (data?.soldDateString | date) : '-'}} , {{ data?.soldTime ? (data?.soldTime ) : '-'}}</td>
+              <td>{{shopInformation?.currency | currencyIcon}} {{ (data?.subTotal ?? 0) | number : '': 'bn'}}</td>
+              <td> {{shopInformation?.currency | currencyIcon}}  {{ (data?.discount ?? 0) | number : '': 'bn'}}</td>
+              <!--              <td>{{ data?.vatAmount | number : '': 'bn'}}</td>-->
+              <td>{{shopInformation?.currency | currencyIcon}} {{ (data?.total ?? 0) | number : '': 'bn'}}</td>
+              <td>{{ data?.paymentType | uppercase}}</td>
+              <td (click)="noteUpdate(data?._id, data?.note ,$event)" class="notes"><span class="note"><span class="note1">{{ data?.note ?? 'Add New Notes' }}</span></span></td>
+
+<!--              <td class="button">-->
+<!--                <a-->
+<!--                  mat-mini-fab-->
+<!--                  color="accent"-->
+<!--                  [routerLink]="['../new-sales/', data._id]" [queryParams]="{view: true}">-->
+<!--                  <mat-icon>visibility</mat-icon>-->
+<!--                </a>-->
+<!--                <button color="primary" (click)="openConfirmDialog('print', data)" mat-mini-fab matTooltip="Print">-->
+<!--                  <mat-icon class="material-symbols-outlined">print</mat-icon>-->
+<!--                </button>-->
+<!--                <button-->
+<!--                  *ngIf="checkEditPermission"-->
+<!--                  mat-mini-fab-->
+<!--                  color="warn"-->
+<!--                  [routerLink]="['../new-sales/', data._id]">-->
+<!--                  <mat-icon>edit</mat-icon>-->
+<!--                </button>-->
+<!--              </td>-->
+            </tr>
+            <tr class="table-hover" style="background: #fff5ea">
+              <td></td>
+              <td style="font-weight: bold">Total({{shopInformation?.currency | currencyIcon}})</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <!--              <td></td>-->
+              <td style="font-weight: bold">
+                {{shopInformation?.currency | currencyIcon}}  {{ data.subTotal| number : "" : "bn" || "-" }}
+              </td>
+              <td style="font-weight: bold">
+                {{shopInformation?.currency | currencyIcon}}  {{ data.discount| number : "" : "bn" || "-" }}
+              </td>
+              <!--              <td style="font-weight: bold">-->
+              <!--                {{ data.vat| number : "" : "bn" || "-" }}-->
+              <!--              </td>-->
+              <td style="font-weight: bold">
+                {{shopInformation?.currency | currencyIcon}}       {{ data.total| number : "" : "bn" || "-" }}
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMPLATE NGX SPINNER-->
+<ngx-spinner
+  bdColor="rgba(0,0,0,0.3)"
+  size="medium"
+  color="#fff"
+  type="ball-scale-pulse"
+  [fullScreen]="true"
+>
+  <p style="color: white">Loading...</p>
+</ngx-spinner>
+
+
+
+<!-- Print Area -->
+<app-print-sale-pos style="visibility: hidden" id="section-pos-print" [data]="saleData" [shopInformation]="shopInformation"></app-print-sale-pos>
